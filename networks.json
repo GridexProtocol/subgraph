@@ -1,0 +1,8 @@
+{
+  "goerli": {
+    "GridFactory": {
+      "address": "0xA1fb6E405f1DcbBcB0AB27765254bbcD5948eD79",
+      "startBlock": 8442318
+    }
+  }
+}
