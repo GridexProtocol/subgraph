@@ -7,8 +7,8 @@ import {
   PlaceMakerOrder as PlaceMakerOrderEvent,
   SettleMakerOrder as SettleMakerOrderEvent,
   Swap as SwapEvent,
-} from "../generated/templates/Grid/Grid";
-import { Grid, Token, Bundle, Order, Boundary, TransactionHistory, GridexProtocol } from "../generated/schema";
+} from "../../generated/templates/Grid/Grid";
+import { Grid, Token, Bundle, Order, Boundary, TransactionHistory, GridexProtocol } from "../../generated/schema";
 import { Address, BigInt, BigDecimal } from "@graphprotocol/graph-ts";
 import { log } from "@graphprotocol/graph-ts";
 import { updateGridCandle } from "./candle";

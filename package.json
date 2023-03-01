@@ -19,10 +19,10 @@
     "node": ">=10"
   },
   "scripts": {
-    "codegen": "graph codegen",
-    "build": "graph build",
-    "rebuild": "rm -rf generated && rm -rf build && graph codegen && graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ subgraph",
+    "rebuild-goerli": "rm -rf generated && rm -rf build && cd src/goerli && graph codegen -o ../../generated && graph build -o ../../build",
+    "deploy-goerli": "cd src/goerli && graph deploy --studio core-subgraph-goerli",
+    "rebuild-arbitrum": "rm -rf generated && rm -rf build && cd src/arbitrum && graph codegen -o ../../generated && graph build -o ../../build",
+    "deploy-arbitrum": "cd src/arbitrum && graph deploy --studio core-subgraph-arbitrum",
     "create-local": "graph create --node http://localhost:8020/ subgraph",
     "remove-local": "graph remove --node http://localhost:8020/ subgraph",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 subgraph",
