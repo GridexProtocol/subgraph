@@ -1,4 +1,4 @@
-import { Swap as SwapEvent } from "../generated/templates/Grid/Grid";
+import { Swap as SwapEvent } from "../../generated/templates/Grid/Grid";
 import {
   GridCandle1M,
   GridCandle5M,
@@ -7,7 +7,7 @@ import {
   GridCandle1H,
   GridCandle4H,
   GridCandle1D,
-} from "../generated/schema";
+} from "../../generated/schema";
 import { BigDecimal, BigInt } from "@graphprotocol/graph-ts";
 
 enum CandleType {
