@@ -48,7 +48,7 @@ dataSources:
           file: ../../abis/PriceOracle.json
       eventHandlers:
         - event: IncreaseCapacity(indexed address,uint16,uint16)
-          handler: handlePriceUpdated
+          handler: handleIncreaseCapacity
       file: ../../src/base/price-oracle.ts
 templates:
   - kind: ethereum
