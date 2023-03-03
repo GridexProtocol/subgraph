@@ -39,6 +39,7 @@ export function handleGridCreated(event: GridCreatedEvent): void {
   entity.priceX96 = BigInt.fromI32(0);
   entity.price0 = BigDecimal.fromString("0");
   entity.price1 = BigDecimal.fromString("0");
+  entity.priceOracleCapacity = 0;
   entity.volume0 = BigInt.fromI32(0);
   entity.volume1 = BigInt.fromI32(0);
   entity.locked0 = BigInt.fromI32(0);

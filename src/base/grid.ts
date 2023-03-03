@@ -21,6 +21,7 @@ export function handleInitialize(event: InitializeEvent): void {
   grid.priceX96 = event.params.priceX96;
   grid.price0 = calculatePrice0(event.params.priceX96, token0.decimals, token1.decimals);
   grid.price1 = calculatePrice1(grid.price0);
+  grid.priceOracleCapacity = 1;
   grid.save();
 }
 

@@ -49,6 +49,8 @@ type Grid @entity {
   price0: BigDecimal!
   "the current price of the token1, token0/token1"
   price1: BigDecimal!
+  "the capacity of the array that the oracle can use"
+  priceOracleCapacity: Int!
   "the total volume of token0"
   volume0: BigInt!
   "the total volume of token1"
