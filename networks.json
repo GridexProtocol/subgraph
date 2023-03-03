@@ -1,8 +1,8 @@
 {
   "goerli": {
     "GridFactory": {
-      "address": "0xA1fb6E405f1DcbBcB0AB27765254bbcD5948eD79",
-      "startBlock": 8442318
+      "address": "0x32d1F0Dce675902f89D72251DB4AB1d728efa19c",
+      "startBlock": 8588117
     }
   },
   "arbitrum-one": {
