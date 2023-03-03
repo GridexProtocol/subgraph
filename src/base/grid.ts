@@ -136,7 +136,7 @@ export function handleChangeBundleForSettleOrder(event: ChangeBundleForSettleOrd
   boundary.makerAmountRemaining = boundary.makerAmountRemaining.plus(event.params.makerAmountRemaining);
   boundary.save();
 
-  // Update boundary
+  // Update grid
   if (bundle.zero) {
     grid.locked0 = grid.locked0.plus(event.params.makerAmountRemaining);
   } else {
@@ -230,7 +230,8 @@ export function handleSwap(event: SwapEvent): void {
   grid.volume1 = grid.volume1.plus(event.params.amount1.abs());
   if (event.params.amount0.lt(BigInt.fromI32(0))) {
     grid.locked0 = grid.locked0.plus(event.params.amount0);
-  } else {
+  }
+  if (event.params.amount1.lt(BigInt.fromI32(0))) {
     grid.locked1 = grid.locked1.plus(event.params.amount1);
   }
   grid.swapCount = grid.swapCount.plus(BigInt.fromI32(1));
@@ -301,8 +302,8 @@ export function handleSwap(event: SwapEvent): void {
 }
 
 export function handleChangeBundleForSwap(event: ChangeBundleForSwapEvent): void {
-  const bundle = Bundle.load(event.address.toHexString() + ":" + event.params.bundleId.toString()) as Bundle;
   // Update bundle
+  const bundle = Bundle.load(event.address.toHexString() + ":" + event.params.bundleId.toString()) as Bundle;
   bundle.makerAmountRemaining = bundle.makerAmountRemaining.plus(event.params.makerAmountRemaining);
   bundle.takerAmountRemaining = bundle.takerAmountRemaining.plus(event.params.amountIn);
   bundle.takerFeeAmountRemaining = bundle.takerFeeAmountRemaining.plus(event.params.takerFeeAmountIn);
@@ -310,7 +311,7 @@ export function handleChangeBundleForSwap(event: ChangeBundleForSwapEvent): void
 
   // Update boundary
   const boundary = Boundary.load(
-    event.address.toHexString() + ":" + bundle.zero.toString() + ":" + bundle.boundaryLower.toString()
+      event.address.toHexString() + ":" + bundle.zero.toString() + ":" + bundle.boundaryLower.toString()
   ) as Boundary;
   boundary.makerAmountRemaining = boundary.makerAmountRemaining.plus(event.params.makerAmountRemaining);
   boundary.save();
