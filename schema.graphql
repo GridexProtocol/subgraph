@@ -109,6 +109,16 @@ type Bundle @entity {
   takerFeeAmountRemaining: BigInt!
   "number of orders in the bundle"
   orderCount: BigInt!
+  "the block number when all orders in the bundle are fully filled"
+  fullyFilledBlock: BigInt!
+  "The block timestamp when all orders in the bundle are fully filled"
+  fullyFilledTimestamp: BigInt!
+  "the block number when the bundle is created"
+  createdBlock: BigInt!
+  "the block timestamp when the bundle is created"
+  createdTimestamp: BigInt!
+  # derived fields
+  orders: [Order!]! @derivedFrom(field: "bundle")
 }
 
 type Order @entity {
@@ -126,6 +136,10 @@ type Order @entity {
   zero: Boolean!
   "when settled is true, it represents the order has been settled"
   settled: Boolean!
+  "the block number when the order is settled"
+  settledBlock: BigInt!
+  "the block timestamp when the order is settled"
+  settledTimestamp: BigInt!
   "the lower boundary of the order"
   boundaryLower: Int!
   "the amount of token0 or token1 that the maker added"
@@ -138,6 +152,10 @@ type Order @entity {
   takerFeeAmountOut: BigInt!
   "the average price of the order will be only updated when the order is settled."
   avgPrice: BigDecimal!
+  "the block number when the order is placed"
+  placedBlock: BigInt!
+  "the block timestamp when the order is placed"
+  placedTimestamp: BigInt!
 }
 
 type Boundary @entity {
