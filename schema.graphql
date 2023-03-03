@@ -136,9 +136,9 @@ type Order @entity {
   zero: Boolean!
   "when settled is true, it represents the order has been settled"
   settled: Boolean!
-  "when settledBlock is not zero, it represents the block number when the order is settled"
+  "the block number when the order is settled"
   settledBlock: BigInt!
-  "when settledTimestamp is not zero, it represents the block timestamp when the order is settled"
+  "the block timestamp when the order is settled"
   settledTimestamp: BigInt!
   "the lower boundary of the order"
   boundaryLower: Int!
