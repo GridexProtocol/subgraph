@@ -109,6 +109,16 @@ type Bundle @entity {
   takerFeeAmountRemaining: BigInt!
   "number of orders in the bundle"
   orderCount: BigInt!
+  "the block number when all orders in the bundle are fully filled"
+  fullyFilledBlock: BigInt!
+  "The block timestamp when all orders in the bundle are fully filled"
+  fullyFilledTimestamp: BigInt!
+  "the block number when the bundle is created"
+  createdBlock: BigInt!
+  "the block timestamp when the bundle is created"
+  createdTimestamp: BigInt!
+  # derived fields
+  orders: [Order!]! @derivedFrom(field: "bundle")
 }
 
 type Order @entity {

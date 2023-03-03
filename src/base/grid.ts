@@ -6,9 +6,17 @@ import {
   Initialize as InitializeEvent,
   PlaceMakerOrder as PlaceMakerOrderEvent,
   SettleMakerOrder as SettleMakerOrderEvent,
-  Swap as SwapEvent,
+  Swap as SwapEvent
 } from "../../generated/templates/Grid/Grid";
-import { Grid, Token, Bundle, Order, Boundary, TransactionHistory, GridexProtocol } from "../../generated/schema";
+import {
+  Grid,
+  Token,
+  Bundle,
+  Order,
+  Boundary,
+  TransactionHistory,
+  GridexProtocol
+} from "../../generated/schema";
 import { Address, BigInt, BigDecimal } from "@graphprotocol/graph-ts";
 import { log } from "@graphprotocol/graph-ts";
 import { updateGridCandle } from "./candle";
@@ -19,7 +27,11 @@ export function handleInitialize(event: InitializeEvent): void {
   const token1 = mustLoadToken(grid.token1);
   grid.boundary = event.params.boundary;
   grid.priceX96 = event.params.priceX96;
-  grid.price0 = calculatePrice0(event.params.priceX96, token0.decimals, token1.decimals);
+  grid.price0 = calculatePrice0(
+    event.params.priceX96,
+    token0.decimals,
+    token1.decimals
+  );
   grid.price1 = calculatePrice1(grid.price0);
   grid.priceOracleCapacity = 1;
   grid.save();
@@ -32,9 +44,13 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
 
   const grid = mustLoadGrid(event.address);
   // Create a new bundle if one doesn't exist
-  let bundle = Bundle.load(event.address.toHexString() + ":" + event.params.bundleId.toString());
+  let bundle = Bundle.load(
+    event.address.toHexString() + ":" + event.params.bundleId.toString()
+  );
   if (bundle == null) {
-    bundle = new Bundle(event.address.toHexString() + ":" + event.params.bundleId.toString());
+    bundle = new Bundle(
+      event.address.toHexString() + ":" + event.params.bundleId.toString()
+    );
     bundle.grid = grid.id;
     bundle.bundleId = event.params.bundleId;
     bundle.boundaryLower = event.params.boundaryLower;
@@ -44,26 +60,42 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
     bundle.takerAmountRemaining = BigInt.fromI32(0);
     bundle.takerFeeAmountRemaining = BigInt.fromI32(0);
     bundle.orderCount = BigInt.fromI32(0);
+    bundle.fullyFilledBlock = BigInt.fromI32(0);
+    bundle.fullyFilledTimestamp = BigInt.fromI32(0);
+    bundle.createdBlock = event.block.number;
+    bundle.createdTimestamp = event.block.timestamp;
   }
   bundle.makerAmountTotal = bundle.makerAmountTotal.plus(event.params.amount);
-  bundle.makerAmountRemaining = bundle.makerAmountRemaining.plus(event.params.amount);
+  bundle.makerAmountRemaining = bundle.makerAmountRemaining.plus(
+    event.params.amount
+  );
   bundle.orderCount = bundle.orderCount.plus(BigInt.fromI32(1));
   bundle.save();
 
   // Create a new boundary if one doesn't exist
   let boundary = Boundary.load(
-    event.address.toHexString() + ":" + bundle.zero.toString() + ":" + bundle.boundaryLower.toString()
+    event.address.toHexString() +
+      ":" +
+      bundle.zero.toString() +
+      ":" +
+      bundle.boundaryLower.toString()
   );
   if (boundary == null) {
     boundary = new Boundary(
-      event.address.toHexString() + ":" + bundle.zero.toString() + ":" + bundle.boundaryLower.toString()
+      event.address.toHexString() +
+        ":" +
+        bundle.zero.toString() +
+        ":" +
+        bundle.boundaryLower.toString()
     );
     boundary.grid = bundle.grid;
     boundary.zero = event.params.zero;
     boundary.boundary = event.params.boundaryLower;
     boundary.makerAmountRemaining = BigInt.fromI32(0);
   }
-  boundary.makerAmountRemaining = boundary.makerAmountRemaining.plus(event.params.amount);
+  boundary.makerAmountRemaining = boundary.makerAmountRemaining.plus(
+    event.params.amount
+  );
   boundary.save();
 
   // Update grid
@@ -86,7 +118,9 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
   token.save();
 
   // Create a new order
-  const order = new Order(event.address.toHexString() + ":" + event.params.orderId.toString());
+  const order = new Order(
+    event.address.toHexString() + ":" + event.params.orderId.toString()
+  );
   order.grid = grid.id;
   order.orderId = event.params.orderId;
   order.bundle = bundle.id;
@@ -106,7 +140,9 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
   order.save();
 
   // Create a new transaction history
-  const tx = new TransactionHistory(event.transaction.hash.toHexString() + ":" + event.logIndex.toString());
+  const tx = new TransactionHistory(
+    event.transaction.hash.toHexString() + ":" + event.logIndex.toString()
+  );
   tx.grid = grid.id;
   tx.type = "PlaceMakerOrder";
   tx.sender = event.transaction.from;
@@ -126,19 +162,33 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
   tx.save();
 }
 
-export function handleChangeBundleForSettleOrder(event: ChangeBundleForSettleOrderEvent): void {
+export function handleChangeBundleForSettleOrder(
+  event: ChangeBundleForSettleOrderEvent
+): void {
   const grid = mustLoadGrid(event.address);
   // Update bundle
-  const bundle = Bundle.load(event.address.toHexString() + ":" + event.params.bundleId.toString()) as Bundle;
-  bundle.makerAmountTotal = bundle.makerAmountTotal.plus(event.params.makerAmountTotal);
-  bundle.makerAmountRemaining = bundle.makerAmountRemaining.plus(event.params.makerAmountRemaining);
+  const bundle = Bundle.load(
+    event.address.toHexString() + ":" + event.params.bundleId.toString()
+  ) as Bundle;
+  bundle.makerAmountTotal = bundle.makerAmountTotal.plus(
+    event.params.makerAmountTotal
+  );
+  bundle.makerAmountRemaining = bundle.makerAmountRemaining.plus(
+    event.params.makerAmountRemaining
+  );
   bundle.save();
 
   // Update boundary
   const boundary = Boundary.load(
-    event.address.toHexString() + ":" + bundle.zero.toString() + ":" + bundle.boundaryLower.toString()
+    event.address.toHexString() +
+      ":" +
+      bundle.zero.toString() +
+      ":" +
+      bundle.boundaryLower.toString()
   ) as Boundary;
-  boundary.makerAmountRemaining = boundary.makerAmountRemaining.plus(event.params.makerAmountRemaining);
+  boundary.makerAmountRemaining = boundary.makerAmountRemaining.plus(
+    event.params.makerAmountRemaining
+  );
   boundary.save();
 
   // Update grid
@@ -161,7 +211,9 @@ export function handleChangeBundleForSettleOrder(event: ChangeBundleForSettleOrd
 }
 
 export function handleSettleMakerOrder(event: SettleMakerOrderEvent): void {
-  const order = Order.load(event.address.toHexString() + ":" + event.params.orderId.toString()) as Order;
+  const order = Order.load(
+    event.address.toHexString() + ":" + event.params.orderId.toString()
+  ) as Order;
   const grid = Grid.load(order.grid) as Grid;
   const token0 = Token.load(grid.token0) as Token;
   const token1 = Token.load(grid.token1) as Token;
@@ -193,12 +245,18 @@ export function handleSettleMakerOrder(event: SettleMakerOrderEvent): void {
 
   // Update bundle
   const bundle = Bundle.load(order.bundle) as Bundle;
-  bundle.takerAmountRemaining = bundle.takerAmountRemaining.minus(event.params.takerAmountOut);
-  bundle.takerFeeAmountRemaining = bundle.takerFeeAmountRemaining.minus(event.params.takerFeeAmountOut);
+  bundle.takerAmountRemaining = bundle.takerAmountRemaining.minus(
+    event.params.takerAmountOut
+  );
+  bundle.takerFeeAmountRemaining = bundle.takerFeeAmountRemaining.minus(
+    event.params.takerFeeAmountOut
+  );
   bundle.save();
 
   // Create a new transaction history
-  const tx = new TransactionHistory(event.transaction.hash.toHexString() + ":" + event.logIndex.toString());
+  const tx = new TransactionHistory(
+    event.transaction.hash.toHexString() + ":" + event.logIndex.toString()
+  );
   tx.grid = grid.id;
   tx.type = "SettleMakerOrder";
   tx.sender = event.transaction.from;
@@ -231,7 +289,11 @@ export function handleSwap(event: SwapEvent): void {
   // Update grid
   grid.boundary = event.params.boundary;
   grid.priceX96 = event.params.priceX96;
-  grid.price0 = calculatePrice0(event.params.priceX96, token0.decimals, token1.decimals);
+  grid.price0 = calculatePrice0(
+    event.params.priceX96,
+    token0.decimals,
+    token1.decimals
+  );
   grid.price1 = calculatePrice1(grid.price0);
   grid.volume0 = grid.volume0.plus(event.params.amount0.abs());
   grid.volume1 = grid.volume1.plus(event.params.amount1.abs());
@@ -258,21 +320,32 @@ export function handleSwap(event: SwapEvent): void {
   token1.save();
 
   // Skip kline update if swap amount is zero
-  if (event.params.amount0.equals(BigInt.fromI32(0)) || event.params.amount1.equals(BigInt.fromI32(0))) {
-    log.debug("Swap amount is zero, skip kline update, tx hash {}", [event.transaction.hash.toHexString()]);
+  if (
+    event.params.amount0.equals(BigInt.fromI32(0)) ||
+    event.params.amount1.equals(BigInt.fromI32(0))
+  ) {
+    log.debug("Swap amount is zero, skip kline update, tx hash {}", [
+      event.transaction.hash.toHexString()
+    ]);
     return;
   }
 
   let fee0 = BigInt.fromI32(0);
   let fee1 = BigInt.fromI32(0);
   if (event.params.amount0.gt(BigInt.fromI32(0))) {
-    fee0 = event.params.amount0.times(BigInt.fromString(grid.takerFee.toString())).div(BigInt.fromI64(1000000));
+    fee0 = event.params.amount0
+      .times(BigInt.fromString(grid.takerFee.toString()))
+      .div(BigInt.fromI64(1000000));
   } else {
-    fee1 = event.params.amount1.times(BigInt.fromString(grid.takerFee.toString())).div(BigInt.fromI64(1000000));
+    fee1 = event.params.amount1
+      .times(BigInt.fromString(grid.takerFee.toString()))
+      .div(BigInt.fromI64(1000000));
   }
 
   // Create a new transaction history
-  const tx = new TransactionHistory(event.transaction.hash.toHexString() + ":" + event.logIndex.toString());
+  const tx = new TransactionHistory(
+    event.transaction.hash.toHexString() + ":" + event.logIndex.toString()
+  );
   tx.grid = grid.id;
   tx.type = "Swap";
   tx.sender = event.transaction.from;
@@ -305,22 +378,47 @@ export function handleSwap(event: SwapEvent): void {
   tx.save();
 
   // Update grid candle
-  updateGridCandle(event, calculatePrice0(event.params.priceX96, token0.decimals, token1.decimals), fee0, fee1);
+  updateGridCandle(
+    event,
+    calculatePrice0(event.params.priceX96, token0.decimals, token1.decimals),
+    fee0,
+    fee1
+  );
 }
 
-export function handleChangeBundleForSwap(event: ChangeBundleForSwapEvent): void {
+export function handleChangeBundleForSwap(
+  event: ChangeBundleForSwapEvent
+): void {
   // Update bundle
-  const bundle = Bundle.load(event.address.toHexString() + ":" + event.params.bundleId.toString()) as Bundle;
-  bundle.makerAmountRemaining = bundle.makerAmountRemaining.plus(event.params.makerAmountRemaining);
-  bundle.takerAmountRemaining = bundle.takerAmountRemaining.plus(event.params.amountIn);
-  bundle.takerFeeAmountRemaining = bundle.takerFeeAmountRemaining.plus(event.params.takerFeeAmountIn);
+  const bundle = Bundle.load(
+    event.address.toHexString() + ":" + event.params.bundleId.toString()
+  ) as Bundle;
+  bundle.makerAmountRemaining = bundle.makerAmountRemaining.plus(
+    event.params.makerAmountRemaining
+  );
+  bundle.takerAmountRemaining = bundle.takerAmountRemaining.plus(
+    event.params.amountIn
+  );
+  bundle.takerFeeAmountRemaining = bundle.takerFeeAmountRemaining.plus(
+    event.params.takerFeeAmountIn
+  );
+  if (bundle.makerAmountRemaining.equals(BigInt.zero())) {
+    bundle.fullyFilledBlock = event.block.number;
+    bundle.fullyFilledTimestamp = event.block.timestamp;
+  }
   bundle.save();
 
   // Update boundary
   const boundary = Boundary.load(
-      event.address.toHexString() + ":" + bundle.zero.toString() + ":" + bundle.boundaryLower.toString()
+    event.address.toHexString() +
+      ":" +
+      bundle.zero.toString() +
+      ":" +
+      bundle.boundaryLower.toString()
   ) as Boundary;
-  boundary.makerAmountRemaining = boundary.makerAmountRemaining.plus(event.params.makerAmountRemaining);
+  boundary.makerAmountRemaining = boundary.makerAmountRemaining.plus(
+    event.params.makerAmountRemaining
+  );
   boundary.save();
 
   // no need to update grid or token values, they are updated in Swap
@@ -328,7 +426,9 @@ export function handleChangeBundleForSwap(event: ChangeBundleForSwapEvent): void
 
 export function handleCollect(event: CollectEvent): void {
   // Create a new transaction history
-  const tx = new TransactionHistory(event.transaction.hash.toHexString() + ":" + event.logIndex.toString());
+  const tx = new TransactionHistory(
+    event.transaction.hash.toHexString() + ":" + event.logIndex.toString()
+  );
   tx.grid = event.address.toHexString();
   tx.type = "Collect";
   tx.sender = event.transaction.from;
@@ -353,7 +453,9 @@ export function handleFlash(event: FlashEvent): void {
   grid.save();
 
   // Create a new transaction history
-  const tx = new TransactionHistory(event.transaction.hash.toHexString() + ":" + event.logIndex.toString());
+  const tx = new TransactionHistory(
+    event.transaction.hash.toHexString() + ":" + event.logIndex.toString()
+  );
   tx.grid = event.address.toHexString();
   tx.type = "Flash";
   tx.sender = event.transaction.from;
@@ -376,7 +478,11 @@ function mustLoadGrid(address: Address): Grid {
   return Grid.load(address.toHexString()) as Grid;
 }
 
-function calculatePrice0(priceX96: BigInt, decimals0: i32, decimals1: i32): BigDecimal {
+function calculatePrice0(
+  priceX96: BigInt,
+  decimals0: i32,
+  decimals1: i32
+): BigDecimal {
   return priceX96
     .toBigDecimal()
     .div(

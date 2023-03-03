@@ -1,11 +1,16 @@
 import {
   GridCreated as GridCreatedEvent,
-  ResolutionEnabled as ResolutionEnabledEvent,
+  ResolutionEnabled as ResolutionEnabledEvent
 } from "../../generated/GridFactory/GridFactory";
 import { Grid as GridRegistry } from "../../generated/templates";
 import { ERC20 } from "../../generated/GridFactory/ERC20";
 import { ERC20Bytes } from "../../generated/GridFactory/ERC20Bytes";
-import { Grid, GridexProtocol, Resolution, Token } from "../../generated/schema";
+import {
+  Grid,
+  GridexProtocol,
+  Resolution,
+  Token
+} from "../../generated/schema";
 import { Address, BigDecimal, BigInt } from "@graphprotocol/graph-ts";
 import { log } from "@graphprotocol/graph-ts";
 
@@ -97,9 +102,14 @@ function fetchTokenMetadata(address: Address): TokenMetadata {
     log.warning("Reverted on name call for token {}", [address.toHexString()]);
     let bytesNameCall = bytesContract.try_name();
     if (bytesNameCall.reverted) {
-      log.warning("Reverted on bytes name call for token {}", [address.toHexString()]);
+      log.warning("Reverted on bytes name call for token {}", [
+        address.toHexString()
+      ]);
       name = knownTokenMetadata(address).name;
-      log.warning("Using known name {} for token {}", [name, address.toHexString()]);
+      log.warning("Using known name {} for token {}", [
+        name,
+        address.toHexString()
+      ]);
     } else {
       name = bytesNameCall.value.toHexString();
     }
@@ -109,12 +119,19 @@ function fetchTokenMetadata(address: Address): TokenMetadata {
 
   let symbolCall = contract.try_symbol();
   if (symbolCall.reverted) {
-    log.warning("Reverted on symbol call for token {}", [address.toHexString()]);
+    log.warning("Reverted on symbol call for token {}", [
+      address.toHexString()
+    ]);
     let bytesSymbolCall = bytesContract.try_symbol();
     if (bytesSymbolCall.reverted) {
-      log.warning("Reverted on bytes symbol call for token {}", [address.toHexString()]);
+      log.warning("Reverted on bytes symbol call for token {}", [
+        address.toHexString()
+      ]);
       symbol = knownTokenMetadata(address).symbol;
-      log.warning("Using known symbol {} for token {}", [symbol, address.toHexString()]);
+      log.warning("Using known symbol {} for token {}", [
+        symbol,
+        address.toHexString()
+      ]);
     } else {
       symbol = bytesSymbolCall.value.toHexString();
     }
@@ -124,9 +141,14 @@ function fetchTokenMetadata(address: Address): TokenMetadata {
 
   let decimalsCall = contract.try_decimals();
   if (decimalsCall.reverted) {
-    log.warning("Reverted on decimals call for token {}", [address.toHexString()]);
+    log.warning("Reverted on decimals call for token {}", [
+      address.toHexString()
+    ]);
     decimals = knownTokenMetadata(address).decimals;
-    log.warning("Using known decimals {} for token {}", [decimals.toString(), address.toHexString()]);
+    log.warning("Using known decimals {} for token {}", [
+      decimals.toString(),
+      address.toHexString()
+    ]);
   } else {
     decimals = decimalsCall.value;
   }
@@ -135,17 +157,47 @@ function fetchTokenMetadata(address: Address): TokenMetadata {
 
 function knownTokenMetadata(address: Address): TokenMetadata {
   const addressHexString = address.toHexString();
-  if (addressHexString == Address.fromString("0xe0b7927c4af23765cb51314a0e0521a9645f0e2a").toHexString()) {
+  if (
+    addressHexString ==
+    Address.fromString(
+      "0xe0b7927c4af23765cb51314a0e0521a9645f0e2a"
+    ).toHexString()
+  ) {
     return { name: "DigixDAO", symbol: "DGD", decimals: 9 };
-  } else if (addressHexString == Address.fromString("0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9").toHexString()) {
+  } else if (
+    addressHexString ==
+    Address.fromString(
+      "0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9"
+    ).toHexString()
+  ) {
     return { name: "Aave Token", symbol: "AAVE", decimals: 18 };
-  } else if (addressHexString == Address.fromString("0xeb9951021698b42e4399f9cbb6267aa35f82d59d").toHexString()) {
+  } else if (
+    addressHexString ==
+    Address.fromString(
+      "0xeb9951021698b42e4399f9cbb6267aa35f82d59d"
+    ).toHexString()
+  ) {
     return { name: "Lif", symbol: "LIF", decimals: 18 };
-  } else if (addressHexString == Address.fromString("0xbdeb4b83251fb146687fa19d1c660f99411eefe3").toHexString()) {
+  } else if (
+    addressHexString ==
+    Address.fromString(
+      "0xbdeb4b83251fb146687fa19d1c660f99411eefe3"
+    ).toHexString()
+  ) {
     return { name: "Savedroid", symbol: "SVD", decimals: 18 };
-  } else if (addressHexString == Address.fromString("0xbb9bc244d798123fde783fcc1c72d3bb8c189413").toHexString()) {
+  } else if (
+    addressHexString ==
+    Address.fromString(
+      "0xbb9bc244d798123fde783fcc1c72d3bb8c189413"
+    ).toHexString()
+  ) {
     return { name: "TheDAO", symbol: "TheDAO", decimals: 16 };
-  } else if (addressHexString == Address.fromString("0x38c6a68304cdefb9bec48bbfaaba5c5b47818bb2").toHexString()) {
+  } else if (
+    addressHexString ==
+    Address.fromString(
+      "0x38c6a68304cdefb9bec48bbfaaba5c5b47818bb2"
+    ).toHexString()
+  ) {
     return { name: "HPBCoin", symbol: "HPB", decimals: 18 };
   } else {
     return { name: "Unknown", symbol: "UNKNOWN", decimals: 18 };
