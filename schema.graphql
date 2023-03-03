@@ -126,6 +126,10 @@ type Order @entity {
   zero: Boolean!
   "when settled is true, it represents the order has been settled"
   settled: Boolean!
+  "when settledBlock is not zero, it represents the block number when the order is settled"
+  settledBlock: BigInt!
+  "when settledTimestamp is not zero, it represents the block timestamp when the order is settled"
+  settledTimestamp: BigInt!
   "the lower boundary of the order"
   boundaryLower: Int!
   "the amount of token0 or token1 that the maker added"
@@ -138,6 +142,10 @@ type Order @entity {
   takerFeeAmountOut: BigInt!
   "the average price of the order will be only updated when the order is settled."
   avgPrice: BigDecimal!
+  "the block number when the order is placed"
+  placedBlock: BigInt!
+  "the block timestamp when the order is placed"
+  placedTimestamp: BigInt!
 }
 
 type Boundary @entity {

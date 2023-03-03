@@ -93,12 +93,16 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
   order.owner = event.params.recipient;
   order.zero = event.params.zero;
   order.settled = false;
+  order.settledBlock = BigInt.fromI32(0);
+  order.settledTimestamp = BigInt.fromI32(0);
   order.boundaryLower = event.params.boundaryLower;
   order.makerAmountIn = event.params.amount;
   order.makerAmountOut = BigInt.fromI32(0);
   order.takerAmountOut = BigInt.fromI32(0);
   order.takerFeeAmountOut = BigInt.fromI32(0);
   order.avgPrice = BigDecimal.fromString("0");
+  order.placedBlock = event.block.number;
+  order.placedTimestamp = event.block.timestamp;
   order.save();
 
   // Create a new transaction history
@@ -163,6 +167,8 @@ export function handleSettleMakerOrder(event: SettleMakerOrderEvent): void {
   const token1 = Token.load(grid.token1) as Token;
   // Update order
   order.settled = true;
+  order.settledBlock = event.block.number;
+  order.settledTimestamp = event.block.timestamp;
   order.makerAmountOut = event.params.makerAmountOut;
   order.takerAmountOut = event.params.takerAmountOut;
   order.takerFeeAmountOut = event.params.takerFeeAmountOut;
