@@ -9,6 +9,7 @@ import {
     GridCandle1D
 } from "../../generated/schema";
 import {BigDecimal, BigInt} from "@graphprotocol/graph-ts";
+import {BIG_INT_ONE, BIG_INT_ZERO} from "./helper/consts";
 
 enum CandleType {
     ONE_MINUTE = 60, // 1M
@@ -32,11 +33,11 @@ export function updateGridCandle(event: SwapEvent, price: BigDecimal, fee0: BigI
             entity = new GridCandle1M(event.address.toHexString() + ":" + timestampFn(event, type).toString());
             entity.grid = event.address.toHexString();
             entity.ts = timestampFn(event, type);
-            entity.volume0 = BigInt.fromI32(0);
-            entity.volume1 = BigInt.fromI32(0);
-            entity.fee0 = BigInt.fromI32(0);
-            entity.fee1 = BigInt.fromI32(0);
-            entity.txCount = BigInt.fromI32(0);
+            entity.volume0 = BIG_INT_ZERO;
+            entity.volume1 = BIG_INT_ZERO;
+            entity.fee0 = BIG_INT_ZERO;
+            entity.fee1 = BIG_INT_ZERO;
+            entity.txCount = BIG_INT_ZERO;
             entity.high = price;
             entity.low = price;
             entity.open = price;
@@ -46,7 +47,7 @@ export function updateGridCandle(event: SwapEvent, price: BigDecimal, fee0: BigI
         entity.volume1 = entity.volume1.plus(event.params.amount1.abs());
         entity.fee0 = entity.fee0.plus(fee0);
         entity.fee1 = entity.fee1.plus(fee1);
-        entity.txCount = entity.txCount.plus(BigInt.fromI32(1));
+        entity.txCount = entity.txCount.plus(BIG_INT_ONE);
         entity.close = price;
         if (price.gt(entity.high)) {
             entity.high = price;
@@ -63,11 +64,11 @@ export function updateGridCandle(event: SwapEvent, price: BigDecimal, fee0: BigI
             entity = new GridCandle5M(event.address.toHexString() + ":" + timestampFn(event, type).toString());
             entity.grid = event.address.toHexString();
             entity.ts = timestampFn(event, type);
-            entity.volume0 = BigInt.fromI32(0);
-            entity.volume1 = BigInt.fromI32(0);
-            entity.fee0 = BigInt.fromI32(0);
-            entity.fee1 = BigInt.fromI32(0);
-            entity.txCount = BigInt.fromI32(0);
+            entity.volume0 = BIG_INT_ZERO;
+            entity.volume1 = BIG_INT_ZERO;
+            entity.fee0 = BIG_INT_ZERO;
+            entity.fee1 = BIG_INT_ZERO;
+            entity.txCount = BIG_INT_ZERO;
             entity.high = price;
             entity.low = price;
             entity.open = price;
@@ -77,7 +78,7 @@ export function updateGridCandle(event: SwapEvent, price: BigDecimal, fee0: BigI
         entity.volume1 = entity.volume1.plus(event.params.amount1.abs());
         entity.fee0 = entity.fee0.plus(fee0);
         entity.fee1 = entity.fee1.plus(fee1);
-        entity.txCount = entity.txCount.plus(BigInt.fromI32(1));
+        entity.txCount = entity.txCount.plus(BIG_INT_ONE);
         entity.close = price;
         if (price.gt(entity.high)) {
             entity.high = price;
@@ -94,11 +95,11 @@ export function updateGridCandle(event: SwapEvent, price: BigDecimal, fee0: BigI
             entity = new GridCandle15M(event.address.toHexString() + ":" + timestampFn(event, type).toString());
             entity.grid = event.address.toHexString();
             entity.ts = timestampFn(event, type);
-            entity.volume0 = BigInt.fromI32(0);
-            entity.volume1 = BigInt.fromI32(0);
-            entity.fee0 = BigInt.fromI32(0);
-            entity.fee1 = BigInt.fromI32(0);
-            entity.txCount = BigInt.fromI32(0);
+            entity.volume0 = BIG_INT_ZERO;
+            entity.volume1 = BIG_INT_ZERO;
+            entity.fee0 = BIG_INT_ZERO;
+            entity.fee1 = BIG_INT_ZERO;
+            entity.txCount = BIG_INT_ZERO;
             entity.high = price;
             entity.low = price;
             entity.open = price;
@@ -108,7 +109,7 @@ export function updateGridCandle(event: SwapEvent, price: BigDecimal, fee0: BigI
         entity.volume1 = entity.volume1.plus(event.params.amount1.abs());
         entity.fee0 = entity.fee0.plus(fee0);
         entity.fee1 = entity.fee1.plus(fee1);
-        entity.txCount = entity.txCount.plus(BigInt.fromI32(1));
+        entity.txCount = entity.txCount.plus(BIG_INT_ONE);
         entity.close = price;
         if (price.gt(entity.high)) {
             entity.high = price;
@@ -125,11 +126,11 @@ export function updateGridCandle(event: SwapEvent, price: BigDecimal, fee0: BigI
             entity = new GridCandle30M(event.address.toHexString() + ":" + timestampFn(event, type).toString());
             entity.grid = event.address.toHexString();
             entity.ts = timestampFn(event, type);
-            entity.volume0 = BigInt.fromI32(0);
-            entity.volume1 = BigInt.fromI32(0);
-            entity.fee0 = BigInt.fromI32(0);
-            entity.fee1 = BigInt.fromI32(0);
-            entity.txCount = BigInt.fromI32(0);
+            entity.volume0 = BIG_INT_ZERO;
+            entity.volume1 = BIG_INT_ZERO;
+            entity.fee0 = BIG_INT_ZERO;
+            entity.fee1 = BIG_INT_ZERO;
+            entity.txCount = BIG_INT_ZERO;
             entity.high = price;
             entity.low = price;
             entity.open = price;
@@ -139,7 +140,7 @@ export function updateGridCandle(event: SwapEvent, price: BigDecimal, fee0: BigI
         entity.volume1 = entity.volume1.plus(event.params.amount1.abs());
         entity.fee0 = entity.fee0.plus(fee0);
         entity.fee1 = entity.fee1.plus(fee1);
-        entity.txCount = entity.txCount.plus(BigInt.fromI32(1));
+        entity.txCount = entity.txCount.plus(BIG_INT_ONE);
         entity.close = price;
         if (price.gt(entity.high)) {
             entity.high = price;
@@ -156,11 +157,11 @@ export function updateGridCandle(event: SwapEvent, price: BigDecimal, fee0: BigI
             entity = new GridCandle1H(event.address.toHexString() + ":" + timestampFn(event, type).toString());
             entity.grid = event.address.toHexString();
             entity.ts = timestampFn(event, type);
-            entity.volume0 = BigInt.fromI32(0);
-            entity.volume1 = BigInt.fromI32(0);
-            entity.fee0 = BigInt.fromI32(0);
-            entity.fee1 = BigInt.fromI32(0);
-            entity.txCount = BigInt.fromI32(0);
+            entity.volume0 = BIG_INT_ZERO;
+            entity.volume1 = BIG_INT_ZERO;
+            entity.fee0 = BIG_INT_ZERO;
+            entity.fee1 = BIG_INT_ZERO;
+            entity.txCount = BIG_INT_ZERO;
             entity.high = price;
             entity.low = price;
             entity.open = price;
@@ -170,7 +171,7 @@ export function updateGridCandle(event: SwapEvent, price: BigDecimal, fee0: BigI
         entity.volume1 = entity.volume1.plus(event.params.amount1.abs());
         entity.fee0 = entity.fee0.plus(fee0);
         entity.fee1 = entity.fee1.plus(fee1);
-        entity.txCount = entity.txCount.plus(BigInt.fromI32(1));
+        entity.txCount = entity.txCount.plus(BIG_INT_ONE);
         entity.close = price;
         if (price.gt(entity.high)) {
             entity.high = price;
@@ -187,11 +188,11 @@ export function updateGridCandle(event: SwapEvent, price: BigDecimal, fee0: BigI
             entity = new GridCandle4H(event.address.toHexString() + ":" + timestampFn(event, type).toString());
             entity.grid = event.address.toHexString();
             entity.ts = timestampFn(event, type);
-            entity.volume0 = BigInt.fromI32(0);
-            entity.volume1 = BigInt.fromI32(0);
-            entity.fee0 = BigInt.fromI32(0);
-            entity.fee1 = BigInt.fromI32(0);
-            entity.txCount = BigInt.fromI32(0);
+            entity.volume0 = BIG_INT_ZERO;
+            entity.volume1 = BIG_INT_ZERO;
+            entity.fee0 = BIG_INT_ZERO;
+            entity.fee1 = BIG_INT_ZERO;
+            entity.txCount = BIG_INT_ZERO;
             entity.high = price;
             entity.low = price;
             entity.open = price;
@@ -201,7 +202,7 @@ export function updateGridCandle(event: SwapEvent, price: BigDecimal, fee0: BigI
         entity.volume1 = entity.volume1.plus(event.params.amount1.abs());
         entity.fee0 = entity.fee0.plus(fee0);
         entity.fee1 = entity.fee1.plus(fee1);
-        entity.txCount = entity.txCount.plus(BigInt.fromI32(1));
+        entity.txCount = entity.txCount.plus(BIG_INT_ONE);
         entity.close = price;
         if (price.gt(entity.high)) {
             entity.high = price;
@@ -218,11 +219,11 @@ export function updateGridCandle(event: SwapEvent, price: BigDecimal, fee0: BigI
             entity = new GridCandle1D(event.address.toHexString() + ":" + timestampFn(event, type).toString());
             entity.grid = event.address.toHexString();
             entity.ts = timestampFn(event, type);
-            entity.volume0 = BigInt.fromI32(0);
-            entity.volume1 = BigInt.fromI32(0);
-            entity.fee0 = BigInt.fromI32(0);
-            entity.fee1 = BigInt.fromI32(0);
-            entity.txCount = BigInt.fromI32(0);
+            entity.volume0 = BIG_INT_ZERO;
+            entity.volume1 = BIG_INT_ZERO;
+            entity.fee0 = BIG_INT_ZERO;
+            entity.fee1 = BIG_INT_ZERO;
+            entity.txCount = BIG_INT_ZERO;
             entity.high = price;
             entity.low = price;
             entity.open = price;
@@ -232,7 +233,7 @@ export function updateGridCandle(event: SwapEvent, price: BigDecimal, fee0: BigI
         entity.volume1 = entity.volume1.plus(event.params.amount1.abs());
         entity.fee0 = entity.fee0.plus(fee0);
         entity.fee1 = entity.fee1.plus(fee1);
-        entity.txCount = entity.txCount.plus(BigInt.fromI32(1));
+        entity.txCount = entity.txCount.plus(BIG_INT_ONE);
         entity.close = price;
         if (price.gt(entity.high)) {
             entity.high = price;
