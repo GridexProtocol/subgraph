@@ -6,26 +6,27 @@ import {Grid as GridRegistry} from "../../generated/templates";
 import {ERC20} from "../../generated/GridFactory/ERC20";
 import {ERC20Bytes} from "../../generated/GridFactory/ERC20Bytes";
 import {Grid, GridexProtocol, Resolution, Token} from "../../generated/schema";
-import {Address, BigDecimal, BigInt} from "@graphprotocol/graph-ts";
+import {Address, BigDecimal} from "@graphprotocol/graph-ts";
 import {log} from "@graphprotocol/graph-ts";
+import {BIG_INT_ONE, BIG_INT_ZERO} from "./helper/consts";
 
 export function handleGridCreated(event: GridCreatedEvent): void {
     const protocol = GridexProtocol.load("GridexProtocol") as GridexProtocol;
-    protocol.gridCount = protocol.gridCount.plus(BigInt.fromI32(1));
+    protocol.gridCount = protocol.gridCount.plus(BIG_INT_ONE);
     protocol.save();
 
     let token0 = Token.load(event.params.token0.toHexString());
     if (token0 == null) {
         token0 = buildEmptyToken(event.params.token0);
     }
-    token0.gridCount = token0.gridCount.plus(BigInt.fromI32(1));
+    token0.gridCount = token0.gridCount.plus(BIG_INT_ONE);
     token0.save();
 
     let token1 = Token.load(event.params.token1.toHexString());
     if (token1 == null) {
         token1 = buildEmptyToken(event.params.token1);
     }
-    token1.gridCount = token1.gridCount.plus(BigInt.fromI32(1));
+    token1.gridCount = token1.gridCount.plus(BIG_INT_ONE);
     token1.save();
 
     const resolution = Resolution.load(event.params.resolution.toString());
@@ -36,17 +37,17 @@ export function handleGridCreated(event: GridCreatedEvent): void {
     entity.resolution = event.params.resolution;
     entity.takerFee = resolution!.takerFee;
     entity.boundary = 0;
-    entity.priceX96 = BigInt.fromI32(0);
+    entity.priceX96 = BIG_INT_ZERO;
     entity.price0 = BigDecimal.fromString("0");
     entity.price1 = BigDecimal.fromString("0");
     entity.priceOracleCapacity = 0;
-    entity.volume0 = BigInt.fromI32(0);
-    entity.volume1 = BigInt.fromI32(0);
-    entity.locked0 = BigInt.fromI32(0);
-    entity.locked1 = BigInt.fromI32(0);
-    entity.orderCount = BigInt.fromI32(0);
-    entity.flashCount = BigInt.fromI32(0);
-    entity.swapCount = BigInt.fromI32(0);
+    entity.volume0 = BIG_INT_ZERO;
+    entity.volume1 = BIG_INT_ZERO;
+    entity.locked0 = BIG_INT_ZERO;
+    entity.locked1 = BIG_INT_ZERO;
+    entity.orderCount = BIG_INT_ZERO;
+    entity.flashCount = BIG_INT_ZERO;
+    entity.swapCount = BIG_INT_ZERO;
 
     entity.save();
 
@@ -58,10 +59,10 @@ export function handleResolutionEnabled(event: ResolutionEnabledEvent): void {
     if (protocol == null) {
         protocol = new GridexProtocol("GridexProtocol");
         protocol.factory = event.address.toHexString();
-        protocol.gridCount = BigInt.fromI32(0);
-        protocol.orderCount = BigInt.fromI32(0);
-        protocol.flashCount = BigInt.fromI32(0);
-        protocol.swapCount = BigInt.fromI32(0);
+        protocol.gridCount = BIG_INT_ZERO;
+        protocol.orderCount = BIG_INT_ZERO;
+        protocol.flashCount = BIG_INT_ZERO;
+        protocol.swapCount = BIG_INT_ZERO;
     }
     protocol.save();
 
@@ -77,9 +78,9 @@ function buildEmptyToken(address: Address): Token {
     token.name = metadata.name;
     token.symbol = metadata.symbol;
     token.decimals = metadata.decimals;
-    token.volume = BigInt.fromI32(0);
-    token.gridCount = BigInt.fromI32(0);
-    token.totalLocked = BigInt.fromI32(0);
+    token.volume = BIG_INT_ZERO;
+    token.gridCount = BIG_INT_ZERO;
+    token.totalLocked = BIG_INT_ZERO;
     return token;
 }
 

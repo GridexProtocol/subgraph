@@ -12,6 +12,7 @@ import {Grid, Token, Bundle, Order, Boundary, TransactionHistory, GridexProtocol
 import {Address, BigInt, BigDecimal} from "@graphprotocol/graph-ts";
 import {log} from "@graphprotocol/graph-ts";
 import {updateGridCandle} from "./candle";
+import {BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO} from "./helper/consts";
 
 export function handleInitialize(event: InitializeEvent): void {
     const grid = mustLoadGrid(event.address);
@@ -27,7 +28,7 @@ export function handleInitialize(event: InitializeEvent): void {
 
 export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
     const protocol = GridexProtocol.load("GridexProtocol") as GridexProtocol;
-    protocol.orderCount = protocol.orderCount.plus(BigInt.fromI32(1));
+    protocol.orderCount = protocol.orderCount.plus(BIG_INT_ONE);
     protocol.save();
 
     const grid = mustLoadGrid(event.address);
@@ -39,19 +40,19 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
         bundle.bundleId = event.params.bundleId;
         bundle.boundaryLower = event.params.boundaryLower;
         bundle.zero = event.params.zero;
-        bundle.makerAmountTotal = BigInt.fromI32(0);
-        bundle.makerAmountRemaining = BigInt.fromI32(0);
-        bundle.takerAmountRemaining = BigInt.fromI32(0);
-        bundle.takerFeeAmountRemaining = BigInt.fromI32(0);
-        bundle.orderCount = BigInt.fromI32(0);
-        bundle.fullyFilledBlock = BigInt.fromI32(0);
-        bundle.fullyFilledTimestamp = BigInt.fromI32(0);
+        bundle.makerAmountTotal = BIG_INT_ZERO;
+        bundle.makerAmountRemaining = BIG_INT_ZERO;
+        bundle.takerAmountRemaining = BIG_INT_ZERO;
+        bundle.takerFeeAmountRemaining = BIG_INT_ZERO;
+        bundle.orderCount = BIG_INT_ZERO;
+        bundle.fullyFilledBlock = BIG_INT_ZERO;
+        bundle.fullyFilledTimestamp = BIG_INT_ZERO;
         bundle.createdBlock = event.block.number;
         bundle.createdTimestamp = event.block.timestamp;
     }
     bundle.makerAmountTotal = bundle.makerAmountTotal.plus(event.params.amount);
     bundle.makerAmountRemaining = bundle.makerAmountRemaining.plus(event.params.amount);
-    bundle.orderCount = bundle.orderCount.plus(BigInt.fromI32(1));
+    bundle.orderCount = bundle.orderCount.plus(BIG_INT_ONE);
     bundle.save();
 
     // Create a new boundary if one doesn't exist
@@ -65,7 +66,7 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
         boundary.grid = bundle.grid;
         boundary.zero = event.params.zero;
         boundary.boundary = event.params.boundaryLower;
-        boundary.makerAmountRemaining = BigInt.fromI32(0);
+        boundary.makerAmountRemaining = BIG_INT_ZERO;
     }
     boundary.makerAmountRemaining = boundary.makerAmountRemaining.plus(event.params.amount);
     boundary.save();
@@ -76,7 +77,7 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
     } else {
         grid.locked1 = grid.locked1.plus(event.params.amount);
     }
-    grid.orderCount = grid.orderCount.plus(BigInt.fromI32(1));
+    grid.orderCount = grid.orderCount.plus(BIG_INT_ONE);
     grid.save();
 
     // Update token
@@ -97,14 +98,14 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
     order.owner = event.params.recipient;
     order.zero = event.params.zero;
     order.settled = false;
-    order.settledBlock = BigInt.fromI32(0);
-    order.settledTimestamp = BigInt.fromI32(0);
+    order.settledBlock = BIG_INT_ZERO;
+    order.settledTimestamp = BIG_INT_ZERO;
     order.boundaryLower = event.params.boundaryLower;
     order.makerAmountIn = event.params.amount;
-    order.makerAmountOut = BigInt.fromI32(0);
-    order.takerAmountOut = BigInt.fromI32(0);
-    order.takerFeeAmountOut = BigInt.fromI32(0);
-    order.avgPrice = BigDecimal.fromString("0");
+    order.makerAmountOut = BIG_INT_ZERO;
+    order.takerAmountOut = BIG_INT_ZERO;
+    order.takerFeeAmountOut = BIG_INT_ZERO;
+    order.avgPrice = BIG_DECIMAL_ZERO;
     order.placedBlock = event.block.number;
     order.placedTimestamp = event.block.timestamp;
     order.save();
@@ -117,13 +118,13 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
     tx.recipient = event.params.recipient;
     if (event.params.zero) {
         tx.amount0 = event.params.amount;
-        tx.amount1 = BigInt.fromI32(0);
+        tx.amount1 = BIG_INT_ZERO;
     } else {
-        tx.amount0 = BigInt.fromI32(0);
+        tx.amount0 = BIG_INT_ZERO;
         tx.amount1 = event.params.amount;
     }
-    tx.amountTakerFee = BigInt.fromI32(0);
-    tx.avgPrice = BigDecimal.fromString("0");
+    tx.amountTakerFee = BIG_INT_ZERO;
+    tx.avgPrice = BIG_DECIMAL_ZERO;
     tx.blockNumber = event.block.number;
     tx.blockTimestamp = event.block.timestamp;
     tx.transactionHash = event.transaction.hash;
@@ -178,7 +179,7 @@ export function handleSettleMakerOrder(event: SettleMakerOrderEvent): void {
     order.takerFeeAmountOut = event.params.takerFeeAmountOut;
     // Fill price
     const filled = order.makerAmountIn.minus(order.makerAmountOut);
-    if (filled.gt(BigInt.fromI32(0))) {
+    if (filled.gt(BIG_INT_ZERO)) {
         if (order.zero) {
             order.avgPrice = calculatePrice0(
                 event.params.takerAmountOut.leftShift(96).div(filled),
@@ -226,7 +227,7 @@ export function handleSettleMakerOrder(event: SettleMakerOrderEvent): void {
 
 export function handleSwap(event: SwapEvent): void {
     const protocol = GridexProtocol.load("GridexProtocol") as GridexProtocol;
-    protocol.swapCount = protocol.swapCount.plus(BigInt.fromI32(1));
+    protocol.swapCount = protocol.swapCount.plus(BIG_INT_ONE);
     protocol.save();
 
     const grid = mustLoadGrid(event.address);
@@ -239,37 +240,37 @@ export function handleSwap(event: SwapEvent): void {
     grid.price1 = calculatePrice1(grid.price0);
     grid.volume0 = grid.volume0.plus(event.params.amount0.abs());
     grid.volume1 = grid.volume1.plus(event.params.amount1.abs());
-    if (event.params.amount0.lt(BigInt.fromI32(0))) {
+    if (event.params.amount0.lt(BIG_INT_ZERO)) {
         grid.locked0 = grid.locked0.plus(event.params.amount0);
     }
-    if (event.params.amount1.lt(BigInt.fromI32(0))) {
+    if (event.params.amount1.lt(BIG_INT_ZERO)) {
         grid.locked1 = grid.locked1.plus(event.params.amount1);
     }
-    grid.swapCount = grid.swapCount.plus(BigInt.fromI32(1));
+    grid.swapCount = grid.swapCount.plus(BIG_INT_ONE);
     grid.save();
 
     // Update tokens
     token0.volume = token0.volume.plus(event.params.amount0.abs());
-    if (event.params.amount0.lt(BigInt.fromI32(0))) {
+    if (event.params.amount0.lt(BIG_INT_ZERO)) {
         token0.totalLocked = token0.totalLocked.plus(event.params.amount0);
     }
     token0.save();
 
     token1.volume = token1.volume.plus(event.params.amount1.abs());
-    if (event.params.amount1.lt(BigInt.fromI32(0))) {
+    if (event.params.amount1.lt(BIG_INT_ZERO)) {
         token1.totalLocked = token1.totalLocked.plus(event.params.amount1);
     }
     token1.save();
 
     // Skip kline update if swap amount is zero
-    if (event.params.amount0.equals(BigInt.fromI32(0)) || event.params.amount1.equals(BigInt.fromI32(0))) {
+    if (event.params.amount0.equals(BIG_INT_ZERO) || event.params.amount1.equals(BIG_INT_ZERO)) {
         log.debug("Swap amount is zero, skip kline update, tx hash {}", [event.transaction.hash.toHexString()]);
         return;
     }
 
-    let fee0 = BigInt.fromI32(0);
-    let fee1 = BigInt.fromI32(0);
-    if (event.params.amount0.gt(BigInt.fromI32(0))) {
+    let fee0 = BIG_INT_ZERO;
+    let fee1 = BIG_INT_ZERO;
+    if (event.params.amount0.gt(BIG_INT_ZERO)) {
         fee0 = event.params.amount0.times(BigInt.fromString(grid.takerFee.toString())).div(BigInt.fromI64(1000000));
     } else {
         fee1 = event.params.amount1.times(BigInt.fromString(grid.takerFee.toString())).div(BigInt.fromI64(1000000));
@@ -283,8 +284,8 @@ export function handleSwap(event: SwapEvent): void {
     tx.recipient = event.params.recipient;
     tx.amount0 = event.params.amount0;
     tx.amount1 = event.params.amount1;
-    tx.amountTakerFee = fee0.gt(BigInt.fromI32(0)) ? fee0 : fee1;
-    if (fee0.gt(BigInt.fromI32(0))) {
+    tx.amountTakerFee = fee0.gt(BIG_INT_ZERO) ? fee0 : fee1;
+    if (fee0.gt(BIG_INT_ZERO)) {
         tx.avgPrice = calculatePrice0(
             event.params.amount1
                 .abs()
@@ -343,8 +344,8 @@ export function handleCollect(event: CollectEvent): void {
     tx.recipient = event.params.recipient;
     tx.amount0 = event.params.amount0;
     tx.amount1 = event.params.amount1;
-    tx.amountTakerFee = BigInt.fromI32(0);
-    tx.avgPrice = BigDecimal.fromString("0");
+    tx.amountTakerFee = BIG_INT_ZERO;
+    tx.avgPrice = BIG_DECIMAL_ZERO;
     tx.blockNumber = event.block.number;
     tx.blockTimestamp = event.block.timestamp;
     tx.transactionHash = event.transaction.hash;
@@ -353,11 +354,11 @@ export function handleCollect(event: CollectEvent): void {
 
 export function handleFlash(event: FlashEvent): void {
     const protocol = GridexProtocol.load("GridexProtocol") as GridexProtocol;
-    protocol.flashCount = protocol.flashCount.plus(BigInt.fromI32(1));
+    protocol.flashCount = protocol.flashCount.plus(BIG_INT_ONE);
     protocol.save();
 
     const grid = mustLoadGrid(event.address);
-    grid.flashCount = grid.flashCount.plus(BigInt.fromI32(1));
+    grid.flashCount = grid.flashCount.plus(BIG_INT_ONE);
     grid.save();
 
     // Create a new transaction history
@@ -368,8 +369,8 @@ export function handleFlash(event: FlashEvent): void {
     tx.recipient = event.params.recipient;
     tx.amount0 = event.params.amount0;
     tx.amount1 = event.params.amount1;
-    tx.amountTakerFee = BigInt.fromI32(0);
-    tx.avgPrice = BigDecimal.fromString("0");
+    tx.amountTakerFee = BIG_INT_ZERO;
+    tx.avgPrice = BIG_DECIMAL_ZERO;
     tx.blockNumber = event.block.number;
     tx.blockTimestamp = event.block.timestamp;
     tx.transactionHash = event.transaction.hash;
