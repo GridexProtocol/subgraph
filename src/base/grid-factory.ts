@@ -46,6 +46,7 @@ export function handleGridCreated(event: GridCreatedEvent): void {
     entity.locked0 = BIG_INT_ZERO;
     entity.locked1 = BIG_INT_ZERO;
     entity.orderCount = BIG_INT_ZERO;
+    entity.unsettledOrderCount = BIG_INT_ZERO;
     entity.flashCount = BIG_INT_ZERO;
     entity.swapCount = BIG_INT_ZERO;
 
