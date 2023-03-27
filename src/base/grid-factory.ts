@@ -46,6 +46,7 @@ export function handleGridCreated(event: GridCreatedEvent): void {
     entity.locked0 = BIG_INT_ZERO;
     entity.locked1 = BIG_INT_ZERO;
     entity.orderCount = BIG_INT_ZERO;
+    entity.unsettledOrderCount = BIG_INT_ZERO;
     entity.flashCount = BIG_INT_ZERO;
     entity.swapCount = BIG_INT_ZERO;
 
@@ -61,8 +62,10 @@ export function handleResolutionEnabled(event: ResolutionEnabledEvent): void {
         protocol.factory = event.address.toHexString();
         protocol.gridCount = BIG_INT_ZERO;
         protocol.orderCount = BIG_INT_ZERO;
+        protocol.unsettledOrderCount = BIG_INT_ZERO;
         protocol.flashCount = BIG_INT_ZERO;
         protocol.swapCount = BIG_INT_ZERO;
+        protocol.userCount = BIG_INT_ZERO;
     }
     protocol.save();
 

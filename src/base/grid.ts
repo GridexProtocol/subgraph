@@ -8,7 +8,16 @@ import {
     SettleMakerOrder as SettleMakerOrderEvent,
     Swap as SwapEvent
 } from "../../generated/templates/Grid/Grid";
-import {Grid, Token, Bundle, Order, Boundary, TransactionHistory, GridexProtocol} from "../../generated/schema";
+import {
+    Grid,
+    Token,
+    Bundle,
+    Order,
+    Boundary,
+    TransactionHistory,
+    GridexProtocol,
+    UniqueUser
+} from "../../generated/schema";
 import {Address, BigInt, BigDecimal} from "@graphprotocol/graph-ts";
 import {log} from "@graphprotocol/graph-ts";
 import {updateGridCandle} from "./candle";
@@ -27,9 +36,16 @@ export function handleInitialize(event: InitializeEvent): void {
 }
 
 export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
-    const protocol = GridexProtocol.load("GridexProtocol") as GridexProtocol;
+    // Update protocol stats
+    const protocol = mustLoadProtocol();
     protocol.orderCount = protocol.orderCount.plus(BIG_INT_ONE);
+    protocol.unsettledOrderCount = protocol.unsettledOrderCount.plus(BIG_INT_ONE);
     protocol.save();
+
+    // Update user stats
+    const uniqueUser = loadOrCreateUser(protocol, event.transaction.from, event.block.number, event.block.timestamp);
+    uniqueUser.orderCount = uniqueUser.orderCount.plus(BIG_INT_ONE);
+    uniqueUser.save();
 
     const grid = mustLoadGrid(event.address);
     // Create a new bundle if one doesn't exist
@@ -78,6 +94,7 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
         grid.locked1 = grid.locked1.plus(event.params.amount);
     }
     grid.orderCount = grid.orderCount.plus(BIG_INT_ONE);
+    grid.unsettledOrderCount = grid.unsettledOrderCount.plus(BIG_INT_ONE);
     grid.save();
 
     // Update token
@@ -152,6 +169,7 @@ export function handleChangeBundleForSettleOrder(event: ChangeBundleForSettleOrd
     } else {
         grid.locked1 = grid.locked1.plus(event.params.makerAmountRemaining);
     }
+    grid.unsettledOrderCount = grid.unsettledOrderCount.minus(BIG_INT_ONE);
     grid.save();
 
     // Update token
@@ -166,6 +184,15 @@ export function handleChangeBundleForSettleOrder(event: ChangeBundleForSettleOrd
 }
 
 export function handleSettleMakerOrder(event: SettleMakerOrderEvent): void {
+    // Update protocol stats
+    const protocol = mustLoadProtocol();
+    protocol.unsettledOrderCount = protocol.unsettledOrderCount.minus(BIG_INT_ONE);
+    protocol.save();
+
+    // Create a new user if one doesn't exist
+    const uniqueUser = loadOrCreateUser(protocol, event.transaction.from, event.block.number, event.block.timestamp);
+    uniqueUser.save();
+
     const order = Order.load(event.address.toHexString() + ":" + event.params.orderId.toString()) as Order;
     const grid = Grid.load(order.grid) as Grid;
     const token0 = Token.load(grid.token0) as Token;
@@ -229,6 +256,11 @@ export function handleSwap(event: SwapEvent): void {
     const protocol = GridexProtocol.load("GridexProtocol") as GridexProtocol;
     protocol.swapCount = protocol.swapCount.plus(BIG_INT_ONE);
     protocol.save();
+
+    // Update user stats
+    const uniqueUser = loadOrCreateUser(protocol, event.transaction.from, event.block.number, event.block.timestamp);
+    uniqueUser.swapCount = uniqueUser.swapCount.plus(BIG_INT_ONE);
+    uniqueUser.save();
 
     const grid = mustLoadGrid(event.address);
     const token0 = mustLoadToken(grid.token0);
@@ -361,6 +393,11 @@ export function handleFlash(event: FlashEvent): void {
     grid.flashCount = grid.flashCount.plus(BIG_INT_ONE);
     grid.save();
 
+    // Update user stats
+    const uniqueUser = loadOrCreateUser(protocol, event.transaction.from, event.block.number, event.block.timestamp);
+    uniqueUser.flashCount = uniqueUser.flashCount.plus(BIG_INT_ONE);
+    uniqueUser.save();
+
     // Create a new transaction history
     const tx = new TransactionHistory(event.transaction.hash.toHexString() + ":" + event.logIndex.toString());
     tx.grid = event.address.toHexString();
@@ -377,12 +414,32 @@ export function handleFlash(event: FlashEvent): void {
     tx.save();
 }
 
+function mustLoadProtocol(): GridexProtocol {
+    return GridexProtocol.load("GridexProtocol") as GridexProtocol;
+}
+
 function mustLoadToken(address: string): Token {
     return Token.load(address) as Token;
 }
 
 function mustLoadGrid(address: Address): Grid {
     return Grid.load(address.toHexString()) as Grid;
+}
+
+function loadOrCreateUser(protocol: GridexProtocol, address: Address, block: BigInt, timestamp: BigInt): UniqueUser {
+    let uniqueUser = UniqueUser.load(address.toHexString());
+    if (uniqueUser == null) {
+        protocol.userCount = protocol.userCount.plus(BIG_INT_ONE);
+        protocol.save();
+
+        uniqueUser = new UniqueUser(address.toHexString());
+        uniqueUser.orderCount = BIG_INT_ZERO;
+        uniqueUser.flashCount = BIG_INT_ZERO;
+        uniqueUser.swapCount = BIG_INT_ZERO;
+        uniqueUser.createdBlock = block;
+        uniqueUser.createdTimestamp = timestamp;
+    }
+    return uniqueUser as UniqueUser;
 }
 
 function calculatePrice0(priceX96: BigInt, decimals0: i32, decimals1: i32): BigDecimal {
