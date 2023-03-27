@@ -3,14 +3,18 @@ type GridexProtocol @entity {
   id: ID!
   "Gridex Protocol Factory address"
   factory: String!
-  "number of grids created"
+  "the number of grids created"
   gridCount: BigInt!
-  "number of orders"
+  "the number of orders placed by users"
   orderCount: BigInt!
-  "number of flash transactions"
+  "the number of unsettled orders placed by users"
+  unsettledOrderCount: BigInt!
+  "the number of flash transactions"
   flashCount: BigInt!
-  "number of swap transactions"
+  "the number of swap transactions"
   swapCount: BigInt!
+  "the number of users interacting with Gridex Protocol"
+  userCount: BigInt!
 }
 
 type Token @entity {
@@ -24,7 +28,7 @@ type Token @entity {
   decimals: Int!
   "total volume"
   volume: BigInt!
-  "number of Grids that contain this token"
+  "the number of Grids that contain this token"
   gridCount: BigInt!
   "total locked amount of Grids that contain this token"
   totalLocked: BigInt!
@@ -59,11 +63,13 @@ type Grid @entity {
   locked0: BigInt!
   "the total locked amount of token1"
   locked1: BigInt!
-  "number of orders in the grid"
+  "the number of orders in the grid"
   orderCount: BigInt!
-  "number of flash transactions in the grid"
+  "the number of unsettled orders in the grid"
+  unsettledOrderCount: BigInt!
+  "the number of flash transactions in the grid"
   flashCount: BigInt!
-  "number of swap transactions in the grid"
+  "the number of swap transactions in the grid"
   swapCount: BigInt!
   # derived fields
   transactionHistories: [TransactionHistory!]! @derivedFrom(field: "grid")
@@ -107,7 +113,7 @@ type Bundle @entity {
   takerAmountRemaining: BigInt!
   "the remaining amount of fees that takers have paid in"
   takerFeeAmountRemaining: BigInt!
-  "number of orders in the bundle"
+  "the number of orders in the bundle"
   orderCount: BigInt!
   "the block number when all orders in the bundle are fully filled"
   fullyFilledBlock: BigInt!
@@ -170,6 +176,21 @@ type Boundary @entity {
   makerAmountRemaining: BigInt!
 }
 
+type UniqueUser @entity {
+  "user address"
+  id: ID!
+  "the number of orders placed by the user"
+  orderCount: BigInt!
+  "the number of flash transactions"
+  flashCount: BigInt!
+  "the number of swap transactions"
+  swapCount: BigInt!
+  "the block number when the user first interacted with the Gridex Protocol"
+  createdBlock: BigInt!
+  "the block timestamp when the user first interacted with the Gridex Protocol"
+  createdTimestamp: BigInt!
+}
+
 type GridCandle1M @entity {
   "the format is {gridAddress}:{truncateTimestamp}"
   id: ID!
@@ -193,7 +214,7 @@ type GridCandle1M @entity {
   fee0: BigInt!
   "the amount of fees that takers have paid for token1"
   fee1: BigInt!
-  "number of swap transactions"
+  "the number of swap transactions"
   txCount: BigInt!
 }
 
@@ -220,7 +241,7 @@ type GridCandle5M @entity {
   fee0: BigInt!
   "the amount of fees that takers have paid for token1"
   fee1: BigInt!
-  "number of swap transactions"
+  "the number of swap transactions"
   txCount: BigInt!
 }
 
@@ -247,7 +268,7 @@ type GridCandle15M @entity {
   fee0: BigInt!
   "the amount of fees that takers have paid for token1"
   fee1: BigInt!
-  "number of swap transactions"
+  "the number of swap transactions"
   txCount: BigInt!
 }
 
@@ -274,7 +295,7 @@ type GridCandle30M @entity {
   fee0: BigInt!
   "the amount of fees that takers have paid for token1"
   fee1: BigInt!
-  "number of swap transactions"
+  "the number of swap transactions"
   txCount: BigInt!
 }
 
@@ -301,7 +322,7 @@ type GridCandle1H @entity {
   fee0: BigInt!
   "the amount of fees that takers have paid for token1"
   fee1: BigInt!
-  "number of swap transactions"
+  "the number of swap transactions"
   txCount: BigInt!
 }
 
@@ -328,7 +349,7 @@ type GridCandle4H @entity {
   fee0: BigInt!
   "the amount of fees that takers have paid for token1"
   fee1: BigInt!
-  "number of swap transactions"
+  "the number of swap transactions"
   txCount: BigInt!
 }
 
@@ -355,7 +376,7 @@ type GridCandle1D @entity {
   fee0: BigInt!
   "the amount of fees that takers have paid for token1"
   fee1: BigInt!
-  "number of swap transactions"
+  "the number of swap transactions"
   txCount: BigInt!
 }
 

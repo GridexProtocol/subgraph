@@ -61,8 +61,10 @@ export function handleResolutionEnabled(event: ResolutionEnabledEvent): void {
         protocol.factory = event.address.toHexString();
         protocol.gridCount = BIG_INT_ZERO;
         protocol.orderCount = BIG_INT_ZERO;
+        protocol.unsettledOrderCount = BIG_INT_ZERO;
         protocol.flashCount = BIG_INT_ZERO;
         protocol.swapCount = BIG_INT_ZERO;
+        protocol.userCount = BIG_INT_ZERO;
     }
     protocol.save();
 
