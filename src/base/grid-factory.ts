@@ -9,10 +9,12 @@ import {Grid, GridexProtocol, Resolution, Token} from "../../generated/schema";
 import {Address, BigDecimal} from "@graphprotocol/graph-ts";
 import {log} from "@graphprotocol/graph-ts";
 import {BIG_INT_ONE, BIG_INT_ZERO} from "./helper/consts";
+import {saveUniqueTransactionIfRequired} from "./helper/stats";
 
 export function handleGridCreated(event: GridCreatedEvent): void {
     const protocol = GridexProtocol.load("GridexProtocol") as GridexProtocol;
     protocol.gridCount = protocol.gridCount.plus(BIG_INT_ONE);
+    saveUniqueTransactionIfRequired(protocol, event);
     protocol.save();
 
     let token0 = Token.load(event.params.token0.toHexString());
