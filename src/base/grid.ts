@@ -16,9 +16,10 @@ import {
     Boundary,
     TransactionHistory,
     GridexProtocol,
-    UniqueUser
+    UniqueUser,
+    UniqueTransaction
 } from "../../generated/schema";
-import {Address, BigInt, BigDecimal} from "@graphprotocol/graph-ts";
+import {Address, BigInt, BigDecimal, ethereum} from "@graphprotocol/graph-ts";
 import {log} from "@graphprotocol/graph-ts";
 import {updateGridCandle} from "./candle";
 import {BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO} from "./helper/consts";
@@ -40,6 +41,7 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
     const protocol = mustLoadProtocol();
     protocol.orderCount = protocol.orderCount.plus(BIG_INT_ONE);
     protocol.unsettledOrderCount = protocol.unsettledOrderCount.plus(BIG_INT_ONE);
+    saveUniqueTransactionIfRequired(protocol, event);
     protocol.save();
 
     // Update user stats
@@ -187,6 +189,7 @@ export function handleSettleMakerOrder(event: SettleMakerOrderEvent): void {
     // Update protocol stats
     const protocol = mustLoadProtocol();
     protocol.unsettledOrderCount = protocol.unsettledOrderCount.minus(BIG_INT_ONE);
+    saveUniqueTransactionIfRequired(protocol, event);
     protocol.save();
 
     // Create a new user if one doesn't exist
@@ -255,6 +258,7 @@ export function handleSettleMakerOrder(event: SettleMakerOrderEvent): void {
 export function handleSwap(event: SwapEvent): void {
     const protocol = GridexProtocol.load("GridexProtocol") as GridexProtocol;
     protocol.swapCount = protocol.swapCount.plus(BIG_INT_ONE);
+    saveUniqueTransactionIfRequired(protocol, event);
     protocol.save();
 
     // Update user stats
@@ -368,6 +372,11 @@ export function handleChangeBundleForSwap(event: ChangeBundleForSwapEvent): void
 }
 
 export function handleCollect(event: CollectEvent): void {
+    const protocol = mustLoadProtocol();
+    if (saveUniqueTransactionIfRequired(protocol, event)) {
+        protocol.save();
+    }
+
     // Create a new transaction history
     const tx = new TransactionHistory(event.transaction.hash.toHexString() + ":" + event.logIndex.toString());
     tx.grid = event.address.toHexString();
@@ -387,6 +396,7 @@ export function handleCollect(event: CollectEvent): void {
 export function handleFlash(event: FlashEvent): void {
     const protocol = GridexProtocol.load("GridexProtocol") as GridexProtocol;
     protocol.flashCount = protocol.flashCount.plus(BIG_INT_ONE);
+    saveUniqueTransactionIfRequired(protocol, event);
     protocol.save();
 
     const grid = mustLoadGrid(event.address);
@@ -426,6 +436,9 @@ function mustLoadGrid(address: Address): Grid {
     return Grid.load(address.toHexString()) as Grid;
 }
 
+// loadOrCreateUser is used to load a unique user if it exists, or create a new one if it doesn't
+//
+// protocol.userCount is incremented if the user is new and saved, caller SHOULD NOT save protocol
 function loadOrCreateUser(protocol: GridexProtocol, address: Address, block: BigInt, timestamp: BigInt): UniqueUser {
     let uniqueUser = UniqueUser.load(address.toHexString());
     if (uniqueUser == null) {
@@ -440,6 +453,24 @@ function loadOrCreateUser(protocol: GridexProtocol, address: Address, block: Big
         uniqueUser.createdTimestamp = timestamp;
     }
     return uniqueUser as UniqueUser;
+}
+
+// saveUniqueTransactionIfRequired is used to save a unique transaction if it doesn't already exist
+//
+// protocol.txCount is incremented if the transaction is new, but not saved, caller MUST save protocol
+function saveUniqueTransactionIfRequired(protocol: GridexProtocol, event: ethereum.Event): boolean {
+    let uniqueTransaction = UniqueTransaction.load(event.transaction.hash.toHexString());
+    if (uniqueTransaction == null) {
+        protocol.txCount = protocol.txCount.plus(BIG_INT_ONE);
+
+        uniqueTransaction = new UniqueTransaction(event.transaction.hash.toHexString());
+        uniqueTransaction.block = event.block.number;
+        uniqueTransaction.timestamp = event.block.timestamp;
+        uniqueTransaction.save();
+
+        return true;
+    }
+    return false;
 }
 
 function calculatePrice0(priceX96: BigInt, decimals0: i32, decimals1: i32): BigDecimal {

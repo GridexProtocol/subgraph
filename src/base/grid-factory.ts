@@ -66,6 +66,7 @@ export function handleResolutionEnabled(event: ResolutionEnabledEvent): void {
         protocol.flashCount = BIG_INT_ZERO;
         protocol.swapCount = BIG_INT_ZERO;
         protocol.userCount = BIG_INT_ZERO;
+        protocol.txCount = BIG_INT_ZERO;
     }
     protocol.save();
 

@@ -15,6 +15,8 @@ type GridexProtocol @entity {
     swapCount: BigInt!
     "the number of users interacting with Gridex Protocol"
     userCount: BigInt!
+    "the number of transactions interacting with Gridex Protocol"
+    txCount: BigInt!
 }
 
 type Token @entity {
@@ -189,6 +191,15 @@ type UniqueUser @entity {
     createdBlock: BigInt!
     "the block timestamp when the user first interacted with the Gridex Protocol"
     createdTimestamp: BigInt!
+}
+
+type UniqueTransaction @entity(immutable: true) {
+    "transaction hash"
+    id: ID!
+    "the block number when the transaction is mined"
+    block: BigInt!
+    "the block timestamp when the transaction is mined"
+    timestamp: BigInt!
 }
 
 type GridCandle1M @entity {
