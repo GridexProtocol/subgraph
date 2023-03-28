@@ -1,405 +1,405 @@
 type GridexProtocol @entity {
-  "Gridex Protocol"
-  id: ID!
-  "Gridex Protocol Factory address"
-  factory: String!
-  "the number of grids created"
-  gridCount: BigInt!
-  "the number of orders placed by users"
-  orderCount: BigInt!
-  "the number of unsettled orders placed by users"
-  unsettledOrderCount: BigInt!
-  "the number of flash transactions"
-  flashCount: BigInt!
-  "the number of swap transactions"
-  swapCount: BigInt!
-  "the number of users interacting with Gridex Protocol"
-  userCount: BigInt!
+    "Gridex Protocol"
+    id: ID!
+    "Gridex Protocol Factory address"
+    factory: String!
+    "the number of grids created"
+    gridCount: BigInt!
+    "the number of orders placed by users"
+    orderCount: BigInt!
+    "the number of unsettled orders placed by users"
+    unsettledOrderCount: BigInt!
+    "the number of flash transactions"
+    flashCount: BigInt!
+    "the number of swap transactions"
+    swapCount: BigInt!
+    "the number of users interacting with Gridex Protocol"
+    userCount: BigInt!
 }
 
 type Token @entity {
-  "token address"
-  id: ID!
-  "token name"
-  name: String!
-  "token symbol"
-  symbol: String!
-  "token decimals"
-  decimals: Int!
-  "total volume"
-  volume: BigInt!
-  "the number of Grids that contain this token"
-  gridCount: BigInt!
-  "total locked amount of Grids that contain this token"
-  totalLocked: BigInt!
+    "token address"
+    id: ID!
+    "token name"
+    name: String!
+    "token symbol"
+    symbol: String!
+    "token decimals"
+    decimals: Int!
+    "total volume"
+    volume: BigInt!
+    "the number of Grids that contain this token"
+    gridCount: BigInt!
+    "total locked amount of Grids that contain this token"
+    totalLocked: BigInt!
 }
 
 type Grid @entity {
-  "grid address"
-  id: ID!
-  "the first token in the grid, after sorting by address"
-  token0: Token!
-  "the second token in the grid, after sorting by address"
-  token1: Token!
-  "the step size in initialized boundaries for the grid"
-  resolution: Int!
-  "the fee paid to the grid denominated in hundredths of a bip, i.e. 1e-6"
-  takerFee: Int!
-  "the current boundary of the grid"
-  boundary: Int!
-  "the current price of the grid, as a Q64.96"
-  priceX96: BigInt!
-  "the current price of the token0, token1/token0"
-  price0: BigDecimal!
-  "the current price of the token1, token0/token1"
-  price1: BigDecimal!
-  "the capacity of the array that the oracle can use"
-  priceOracleCapacity: Int!
-  "the total volume of token0"
-  volume0: BigInt!
-  "the total volume of token1"
-  volume1: BigInt!
-  "the total locked amount of token0"
-  locked0: BigInt!
-  "the total locked amount of token1"
-  locked1: BigInt!
-  "the number of orders in the grid"
-  orderCount: BigInt!
-  "the number of unsettled orders in the grid"
-  unsettledOrderCount: BigInt!
-  "the number of flash transactions in the grid"
-  flashCount: BigInt!
-  "the number of swap transactions in the grid"
-  swapCount: BigInt!
-  # derived fields
-  transactionHistories: [TransactionHistory!]! @derivedFrom(field: "grid")
-  boundaries: [Boundary!]! @derivedFrom(field: "grid")
-  bundles: [Bundle!]! @derivedFrom(field: "grid")
-  orders: [Order!]! @derivedFrom(field: "grid")
-  candles1M: [GridCandle1M!]! @derivedFrom(field: "grid")
-  candles5M: [GridCandle5M!]! @derivedFrom(field: "grid")
-  candles15M: [GridCandle15M!]! @derivedFrom(field: "grid")
-  candles30M: [GridCandle30M!]! @derivedFrom(field: "grid")
-  candles1H: [GridCandle1H!]! @derivedFrom(field: "grid")
-  candles4H: [GridCandle4H!]! @derivedFrom(field: "grid")
-  candles1D: [GridCandle1D!]! @derivedFrom(field: "grid")
+    "grid address"
+    id: ID!
+    "the first token in the grid, after sorting by address"
+    token0: Token!
+    "the second token in the grid, after sorting by address"
+    token1: Token!
+    "the step size in initialized boundaries for the grid"
+    resolution: Int!
+    "the fee paid to the grid denominated in hundredths of a bip, i.e. 1e-6"
+    takerFee: Int!
+    "the current boundary of the grid"
+    boundary: Int!
+    "the current price of the grid, as a Q64.96"
+    priceX96: BigInt!
+    "the current price of the token0, token1/token0"
+    price0: BigDecimal!
+    "the current price of the token1, token0/token1"
+    price1: BigDecimal!
+    "the capacity of the array that the oracle can use"
+    priceOracleCapacity: Int!
+    "the total volume of token0"
+    volume0: BigInt!
+    "the total volume of token1"
+    volume1: BigInt!
+    "the total locked amount of token0"
+    locked0: BigInt!
+    "the total locked amount of token1"
+    locked1: BigInt!
+    "the number of orders in the grid"
+    orderCount: BigInt!
+    "the number of unsettled orders in the grid"
+    unsettledOrderCount: BigInt!
+    "the number of flash transactions in the grid"
+    flashCount: BigInt!
+    "the number of swap transactions in the grid"
+    swapCount: BigInt!
+    # derived fields
+    transactionHistories: [TransactionHistory!]! @derivedFrom(field: "grid")
+    boundaries: [Boundary!]! @derivedFrom(field: "grid")
+    bundles: [Bundle!]! @derivedFrom(field: "grid")
+    orders: [Order!]! @derivedFrom(field: "grid")
+    candles1M: [GridCandle1M!]! @derivedFrom(field: "grid")
+    candles5M: [GridCandle5M!]! @derivedFrom(field: "grid")
+    candles15M: [GridCandle15M!]! @derivedFrom(field: "grid")
+    candles30M: [GridCandle30M!]! @derivedFrom(field: "grid")
+    candles1H: [GridCandle1H!]! @derivedFrom(field: "grid")
+    candles4H: [GridCandle4H!]! @derivedFrom(field: "grid")
+    candles1D: [GridCandle1D!]! @derivedFrom(field: "grid")
 }
 
 type Resolution @entity(immutable: true) {
-  "resolution"
-  id: ID!
-  "resolution"
-  resolution: Int!
-  "the fee paid to the grid denominated in hundredths of a bip, i.e. 1e-6"
-  takerFee: Int!
+    "resolution"
+    id: ID!
+    "resolution"
+    resolution: Int!
+    "the fee paid to the grid denominated in hundredths of a bip, i.e. 1e-6"
+    takerFee: Int!
 }
 
 type Bundle @entity {
-  "the format is {gridAddress}:{bundleId}"
-  id: ID!
-  "the grid that contains this bundle"
-  grid: Grid!
-  "the bundle id"
-  bundleId: BigInt!
-  "the lower boundary of the bundle"
-  boundaryLower: Int!
-  "when zero is true, it represents token0, otherwise it represents token1"
-  zero: Boolean!
-  "the total amount of token0 or token1 that the maker added"
-  makerAmountTotal: BigInt!
-  "the remaining amount of token0 or token1 that can be swapped out from the makers"
-  makerAmountRemaining: BigInt!
-  "the remaining amount of token0 or token1 that have been swapped in from the takers"
-  takerAmountRemaining: BigInt!
-  "the remaining amount of fees that takers have paid in"
-  takerFeeAmountRemaining: BigInt!
-  "the number of orders in the bundle"
-  orderCount: BigInt!
-  "the block number when all orders in the bundle are fully filled"
-  fullyFilledBlock: BigInt!
-  "The block timestamp when all orders in the bundle are fully filled"
-  fullyFilledTimestamp: BigInt!
-  "the block number when the bundle is created"
-  createdBlock: BigInt!
-  "the block timestamp when the bundle is created"
-  createdTimestamp: BigInt!
-  # derived fields
-  orders: [Order!]! @derivedFrom(field: "bundle")
+    "the format is {gridAddress}:{bundleId}"
+    id: ID!
+    "the grid that contains this bundle"
+    grid: Grid!
+    "the bundle id"
+    bundleId: BigInt!
+    "the lower boundary of the bundle"
+    boundaryLower: Int!
+    "when zero is true, it represents token0, otherwise it represents token1"
+    zero: Boolean!
+    "the total amount of token0 or token1 that the maker added"
+    makerAmountTotal: BigInt!
+    "the remaining amount of token0 or token1 that can be swapped out from the makers"
+    makerAmountRemaining: BigInt!
+    "the remaining amount of token0 or token1 that have been swapped in from the takers"
+    takerAmountRemaining: BigInt!
+    "the remaining amount of fees that takers have paid in"
+    takerFeeAmountRemaining: BigInt!
+    "the number of orders in the bundle"
+    orderCount: BigInt!
+    "the block number when all orders in the bundle are fully filled"
+    fullyFilledBlock: BigInt!
+    "The block timestamp when all orders in the bundle are fully filled"
+    fullyFilledTimestamp: BigInt!
+    "the block number when the bundle is created"
+    createdBlock: BigInt!
+    "the block timestamp when the bundle is created"
+    createdTimestamp: BigInt!
+    # derived fields
+    orders: [Order!]! @derivedFrom(field: "bundle")
 }
 
 type Order @entity {
-  "the format is {gridAddress}:{orderId}"
-  id: ID!
-  "the grid that contains this order"
-  grid: Grid!
-  "the order id"
-  orderId: BigInt!
-  "the bundle that contains this order"
-  bundle: Bundle!
-  "the order owner"
-  owner: Bytes!
-  "when zero is true, it represents token0, otherwise it represents token1"
-  zero: Boolean!
-  "when settled is true, it represents the order has been settled"
-  settled: Boolean!
-  "the block number when the order is settled"
-  settledBlock: BigInt!
-  "the block timestamp when the order is settled"
-  settledTimestamp: BigInt!
-  "the lower boundary of the order"
-  boundaryLower: Int!
-  "the amount of token0 or token1 that the maker added"
-  makerAmountIn: BigInt!
-  "the amount of token0 or token1 that the maker removed is always less than or equal to makerAmountIn, and it can only be updated when the order is settled."
-  makerAmountOut: BigInt!
-  "the amount of token1 or token0 swapped in from the takers will be updated only when the order is settled."
-  takerAmountOut: BigInt!
-  "the amount of fees that takers have paid in will be updated only when the order is settled."
-  takerFeeAmountOut: BigInt!
-  "the average price of the order will be only updated when the order is settled."
-  avgPrice: BigDecimal!
-  "the block number when the order is placed"
-  placedBlock: BigInt!
-  "the block timestamp when the order is placed"
-  placedTimestamp: BigInt!
+    "the format is {gridAddress}:{orderId}"
+    id: ID!
+    "the grid that contains this order"
+    grid: Grid!
+    "the order id"
+    orderId: BigInt!
+    "the bundle that contains this order"
+    bundle: Bundle!
+    "the order owner"
+    owner: Bytes!
+    "when zero is true, it represents token0, otherwise it represents token1"
+    zero: Boolean!
+    "when settled is true, it represents the order has been settled"
+    settled: Boolean!
+    "the block number when the order is settled"
+    settledBlock: BigInt!
+    "the block timestamp when the order is settled"
+    settledTimestamp: BigInt!
+    "the lower boundary of the order"
+    boundaryLower: Int!
+    "the amount of token0 or token1 that the maker added"
+    makerAmountIn: BigInt!
+    "the amount of token0 or token1 that the maker removed is always less than or equal to makerAmountIn, and it can only be updated when the order is settled."
+    makerAmountOut: BigInt!
+    "the amount of token1 or token0 swapped in from the takers will be updated only when the order is settled."
+    takerAmountOut: BigInt!
+    "the amount of fees that takers have paid in will be updated only when the order is settled."
+    takerFeeAmountOut: BigInt!
+    "the average price of the order will be only updated when the order is settled."
+    avgPrice: BigDecimal!
+    "the block number when the order is placed"
+    placedBlock: BigInt!
+    "the block timestamp when the order is placed"
+    placedTimestamp: BigInt!
 }
 
 type Boundary @entity {
-  "the format is {gridAddress}:{zero}:{boundary}"
-  id: ID!
-  "the grid that contains this boundary"
-  grid: Grid!
-  boundary: Int!
-  "when zero is true, it represents token0, otherwise it represents token1"
-  zero: Boolean!
-  "the remaining amount of token0 or token1 that can be swapped out from the makers"
-  makerAmountRemaining: BigInt!
+    "the format is {gridAddress}:{zero}:{boundary}"
+    id: ID!
+    "the grid that contains this boundary"
+    grid: Grid!
+    boundary: Int!
+    "when zero is true, it represents token0, otherwise it represents token1"
+    zero: Boolean!
+    "the remaining amount of token0 or token1 that can be swapped out from the makers"
+    makerAmountRemaining: BigInt!
 }
 
 type UniqueUser @entity {
-  "user address"
-  id: ID!
-  "the number of orders placed by the user"
-  orderCount: BigInt!
-  "the number of flash transactions"
-  flashCount: BigInt!
-  "the number of swap transactions"
-  swapCount: BigInt!
-  "the block number when the user first interacted with the Gridex Protocol"
-  createdBlock: BigInt!
-  "the block timestamp when the user first interacted with the Gridex Protocol"
-  createdTimestamp: BigInt!
+    "user address"
+    id: ID!
+    "the number of orders placed by the user"
+    orderCount: BigInt!
+    "the number of flash transactions"
+    flashCount: BigInt!
+    "the number of swap transactions"
+    swapCount: BigInt!
+    "the block number when the user first interacted with the Gridex Protocol"
+    createdBlock: BigInt!
+    "the block timestamp when the user first interacted with the Gridex Protocol"
+    createdTimestamp: BigInt!
 }
 
 type GridCandle1M @entity {
-  "the format is {gridAddress}:{truncateTimestamp}"
-  id: ID!
-  "the grid that contains this candle"
-  grid: Grid!
-  "the start time of the current candle"
-  ts: BigInt!
-  "the highest price of the current candle"
-  high: BigDecimal!
-  "the lowest price of the current candle"
-  low: BigDecimal!
-  "the first price of the current candle"
-  open: BigDecimal!
-  "the latest price of the current candle"
-  close: BigDecimal!
-  "the trading volume of token0"
-  volume0: BigInt!
-  "the trading volume of token1"
-  volume1: BigInt!
-  "the amount of fees that takers have paid for token0"
-  fee0: BigInt!
-  "the amount of fees that takers have paid for token1"
-  fee1: BigInt!
-  "the number of swap transactions"
-  txCount: BigInt!
+    "the format is {gridAddress}:{truncateTimestamp}"
+    id: ID!
+    "the grid that contains this candle"
+    grid: Grid!
+    "the start time of the current candle"
+    ts: BigInt!
+    "the highest price of the current candle"
+    high: BigDecimal!
+    "the lowest price of the current candle"
+    low: BigDecimal!
+    "the first price of the current candle"
+    open: BigDecimal!
+    "the latest price of the current candle"
+    close: BigDecimal!
+    "the trading volume of token0"
+    volume0: BigInt!
+    "the trading volume of token1"
+    volume1: BigInt!
+    "the amount of fees that takers have paid for token0"
+    fee0: BigInt!
+    "the amount of fees that takers have paid for token1"
+    fee1: BigInt!
+    "the number of swap transactions"
+    txCount: BigInt!
 }
 
 type GridCandle5M @entity {
-  "the format is {gridAddress}:{truncateTimestamp}"
-  id: ID!
-  "the grid that contains this candle"
-  grid: Grid!
-  "the start time of the current candle"
-  ts: BigInt!
-  "the highest price of the current candle"
-  high: BigDecimal!
-  "the lowest price of the current candle"
-  low: BigDecimal!
-  "the first price of the current candle"
-  open: BigDecimal!
-  "the latest price of the current candle"
-  close: BigDecimal!
-  "the trading volume of token0"
-  volume0: BigInt!
-  "the trading volume of token1"
-  volume1: BigInt!
-  "the amount of fees that takers have paid for token0"
-  fee0: BigInt!
-  "the amount of fees that takers have paid for token1"
-  fee1: BigInt!
-  "the number of swap transactions"
-  txCount: BigInt!
+    "the format is {gridAddress}:{truncateTimestamp}"
+    id: ID!
+    "the grid that contains this candle"
+    grid: Grid!
+    "the start time of the current candle"
+    ts: BigInt!
+    "the highest price of the current candle"
+    high: BigDecimal!
+    "the lowest price of the current candle"
+    low: BigDecimal!
+    "the first price of the current candle"
+    open: BigDecimal!
+    "the latest price of the current candle"
+    close: BigDecimal!
+    "the trading volume of token0"
+    volume0: BigInt!
+    "the trading volume of token1"
+    volume1: BigInt!
+    "the amount of fees that takers have paid for token0"
+    fee0: BigInt!
+    "the amount of fees that takers have paid for token1"
+    fee1: BigInt!
+    "the number of swap transactions"
+    txCount: BigInt!
 }
 
 type GridCandle15M @entity {
-  "the format is {gridAddress}:{truncateTimestamp}"
-  id: ID!
-  "the grid that contains this candle"
-  grid: Grid!
-  "the start time of the current candle"
-  ts: BigInt!
-  "the highest price of the current candle"
-  high: BigDecimal!
-  "the lowest price of the current candle"
-  low: BigDecimal!
-  "the first price of the current candle"
-  open: BigDecimal!
-  "the latest price of the current candle"
-  close: BigDecimal!
-  "the trading volume of token0"
-  volume0: BigInt!
-  "the trading volume of token1"
-  volume1: BigInt!
-  "the amount of fees that takers have paid for token0"
-  fee0: BigInt!
-  "the amount of fees that takers have paid for token1"
-  fee1: BigInt!
-  "the number of swap transactions"
-  txCount: BigInt!
+    "the format is {gridAddress}:{truncateTimestamp}"
+    id: ID!
+    "the grid that contains this candle"
+    grid: Grid!
+    "the start time of the current candle"
+    ts: BigInt!
+    "the highest price of the current candle"
+    high: BigDecimal!
+    "the lowest price of the current candle"
+    low: BigDecimal!
+    "the first price of the current candle"
+    open: BigDecimal!
+    "the latest price of the current candle"
+    close: BigDecimal!
+    "the trading volume of token0"
+    volume0: BigInt!
+    "the trading volume of token1"
+    volume1: BigInt!
+    "the amount of fees that takers have paid for token0"
+    fee0: BigInt!
+    "the amount of fees that takers have paid for token1"
+    fee1: BigInt!
+    "the number of swap transactions"
+    txCount: BigInt!
 }
 
 type GridCandle30M @entity {
-  "the format is {gridAddress}:{truncateTimestamp}"
-  id: ID!
-  "the grid that contains this candle"
-  grid: Grid!
-  "the start time of the current candle"
-  ts: BigInt!
-  "the highest price of the current candle"
-  high: BigDecimal!
-  "the lowest price of the current candle"
-  low: BigDecimal!
-  "the first price of the current candle"
-  open: BigDecimal!
-  "the latest price of the current candle"
-  close: BigDecimal!
-  "the trading volume of token0"
-  volume0: BigInt!
-  "the trading volume of token1"
-  volume1: BigInt!
-  "the amount of fees that takers have paid for token0"
-  fee0: BigInt!
-  "the amount of fees that takers have paid for token1"
-  fee1: BigInt!
-  "the number of swap transactions"
-  txCount: BigInt!
+    "the format is {gridAddress}:{truncateTimestamp}"
+    id: ID!
+    "the grid that contains this candle"
+    grid: Grid!
+    "the start time of the current candle"
+    ts: BigInt!
+    "the highest price of the current candle"
+    high: BigDecimal!
+    "the lowest price of the current candle"
+    low: BigDecimal!
+    "the first price of the current candle"
+    open: BigDecimal!
+    "the latest price of the current candle"
+    close: BigDecimal!
+    "the trading volume of token0"
+    volume0: BigInt!
+    "the trading volume of token1"
+    volume1: BigInt!
+    "the amount of fees that takers have paid for token0"
+    fee0: BigInt!
+    "the amount of fees that takers have paid for token1"
+    fee1: BigInt!
+    "the number of swap transactions"
+    txCount: BigInt!
 }
 
 type GridCandle1H @entity {
-  "the format is {gridAddress}:{truncateTimestamp}"
-  id: ID!
-  "the grid that contains this candle"
-  grid: Grid!
-  "the start time of the current candle"
-  ts: BigInt!
-  "the highest price of the current candle"
-  high: BigDecimal!
-  "the lowest price of the current candle"
-  low: BigDecimal!
-  "the first price of the current candle"
-  open: BigDecimal!
-  "the latest price of the current candle"
-  close: BigDecimal!
-  "the trading volume of token0"
-  volume0: BigInt!
-  "the trading volume of token1"
-  volume1: BigInt!
-  "the amount of fees that takers have paid for token0"
-  fee0: BigInt!
-  "the amount of fees that takers have paid for token1"
-  fee1: BigInt!
-  "the number of swap transactions"
-  txCount: BigInt!
+    "the format is {gridAddress}:{truncateTimestamp}"
+    id: ID!
+    "the grid that contains this candle"
+    grid: Grid!
+    "the start time of the current candle"
+    ts: BigInt!
+    "the highest price of the current candle"
+    high: BigDecimal!
+    "the lowest price of the current candle"
+    low: BigDecimal!
+    "the first price of the current candle"
+    open: BigDecimal!
+    "the latest price of the current candle"
+    close: BigDecimal!
+    "the trading volume of token0"
+    volume0: BigInt!
+    "the trading volume of token1"
+    volume1: BigInt!
+    "the amount of fees that takers have paid for token0"
+    fee0: BigInt!
+    "the amount of fees that takers have paid for token1"
+    fee1: BigInt!
+    "the number of swap transactions"
+    txCount: BigInt!
 }
 
 type GridCandle4H @entity {
-  "the format is {gridAddress}:{truncateTimestamp}"
-  id: ID!
-  "the grid that contains this candle"
-  grid: Grid!
-  "the start time of the current candle"
-  ts: BigInt!
-  "the highest price of the current candle"
-  high: BigDecimal!
-  "the lowest price of the current candle"
-  low: BigDecimal!
-  "the first price of the current candle"
-  open: BigDecimal!
-  "the latest price of the current candle"
-  close: BigDecimal!
-  "the trading volume of token0"
-  volume0: BigInt!
-  "the trading volume of token1"
-  volume1: BigInt!
-  "the amount of fees that takers have paid for token0"
-  fee0: BigInt!
-  "the amount of fees that takers have paid for token1"
-  fee1: BigInt!
-  "the number of swap transactions"
-  txCount: BigInt!
+    "the format is {gridAddress}:{truncateTimestamp}"
+    id: ID!
+    "the grid that contains this candle"
+    grid: Grid!
+    "the start time of the current candle"
+    ts: BigInt!
+    "the highest price of the current candle"
+    high: BigDecimal!
+    "the lowest price of the current candle"
+    low: BigDecimal!
+    "the first price of the current candle"
+    open: BigDecimal!
+    "the latest price of the current candle"
+    close: BigDecimal!
+    "the trading volume of token0"
+    volume0: BigInt!
+    "the trading volume of token1"
+    volume1: BigInt!
+    "the amount of fees that takers have paid for token0"
+    fee0: BigInt!
+    "the amount of fees that takers have paid for token1"
+    fee1: BigInt!
+    "the number of swap transactions"
+    txCount: BigInt!
 }
 
 type GridCandle1D @entity {
-  "the format is {gridAddress}:{truncateTimestamp}"
-  id: ID!
-  "the grid that contains this candle"
-  grid: Grid!
-  "the start time of the current candle"
-  ts: BigInt!
-  "the highest price of the current candle"
-  high: BigDecimal!
-  "the lowest price of the current candle"
-  low: BigDecimal!
-  "the first price of the current candle"
-  open: BigDecimal!
-  "the latest price of the current candle"
-  close: BigDecimal!
-  "the trading volume of token0"
-  volume0: BigInt!
-  "the trading volume of token1"
-  volume1: BigInt!
-  "the amount of fees that takers have paid for token0"
-  fee0: BigInt!
-  "the amount of fees that takers have paid for token1"
-  fee1: BigInt!
-  "the number of swap transactions"
-  txCount: BigInt!
+    "the format is {gridAddress}:{truncateTimestamp}"
+    id: ID!
+    "the grid that contains this candle"
+    grid: Grid!
+    "the start time of the current candle"
+    ts: BigInt!
+    "the highest price of the current candle"
+    high: BigDecimal!
+    "the lowest price of the current candle"
+    low: BigDecimal!
+    "the first price of the current candle"
+    open: BigDecimal!
+    "the latest price of the current candle"
+    close: BigDecimal!
+    "the trading volume of token0"
+    volume0: BigInt!
+    "the trading volume of token1"
+    volume1: BigInt!
+    "the amount of fees that takers have paid for token0"
+    fee0: BigInt!
+    "the amount of fees that takers have paid for token1"
+    fee1: BigInt!
+    "the number of swap transactions"
+    txCount: BigInt!
 }
 
 type TransactionHistory @entity(immutable: true) {
-  "the format is {gridAddress}:{logIndex}"
-  id: ID!
-  "the grid that contains this transaction history"
-  grid: Grid!
-  "transaction type, available values: PlaceMakerOrder, SettleMakerOrder, Swap, Collect, Flash"
-  type: String!
-  "transaction sender"
-  sender: Bytes!
-  "according to the type, it may be the owner of the order, the settlement order or the payee of the flash loan"
-  recipient: Bytes!
-  "the amount of token0"
-  amount0: BigInt!
-  "the amount of token1"
-  amount1: BigInt!
-  "the amount of fees, only used when the type is Swap"
-  amountTakerFee: BigInt!
-  "the average price of the Swap"
-  avgPrice: BigDecimal!
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+    "the format is {gridAddress}:{logIndex}"
+    id: ID!
+    "the grid that contains this transaction history"
+    grid: Grid!
+    "transaction type, available values: PlaceMakerOrder, SettleMakerOrder, Swap, Collect, Flash"
+    type: String!
+    "transaction sender"
+    sender: Bytes!
+    "according to the type, it may be the owner of the order, the settlement order or the payee of the flash loan"
+    recipient: Bytes!
+    "the amount of token0"
+    amount0: BigInt!
+    "the amount of token1"
+    amount1: BigInt!
+    "the amount of fees, only used when the type is Swap"
+    amountTakerFee: BigInt!
+    "the average price of the Swap"
+    avgPrice: BigDecimal!
+    blockNumber: BigInt!
+    blockTimestamp: BigInt!
+    transactionHash: Bytes!
 }
