@@ -8,20 +8,12 @@ import {
     SettleMakerOrder as SettleMakerOrderEvent,
     Swap as SwapEvent
 } from "../../generated/templates/Grid/Grid";
-import {
-    Grid,
-    Token,
-    Bundle,
-    Order,
-    Boundary,
-    TransactionHistory,
-    GridexProtocol,
-    UniqueUser
-} from "../../generated/schema";
+import {Grid, Token, Bundle, Order, Boundary, TransactionHistory, GridexProtocol} from "../../generated/schema";
 import {Address, BigInt, BigDecimal} from "@graphprotocol/graph-ts";
 import {log} from "@graphprotocol/graph-ts";
 import {updateGridCandle} from "./candle";
 import {BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO} from "./helper/consts";
+import {loadOrCreateUser, saveUniqueTransactionIfRequired} from "./helper/stats";
 
 export function handleInitialize(event: InitializeEvent): void {
     const grid = mustLoadGrid(event.address);
@@ -40,6 +32,7 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
     const protocol = mustLoadProtocol();
     protocol.orderCount = protocol.orderCount.plus(BIG_INT_ONE);
     protocol.unsettledOrderCount = protocol.unsettledOrderCount.plus(BIG_INT_ONE);
+    saveUniqueTransactionIfRequired(protocol, event);
     protocol.save();
 
     // Update user stats
@@ -187,6 +180,7 @@ export function handleSettleMakerOrder(event: SettleMakerOrderEvent): void {
     // Update protocol stats
     const protocol = mustLoadProtocol();
     protocol.unsettledOrderCount = protocol.unsettledOrderCount.minus(BIG_INT_ONE);
+    saveUniqueTransactionIfRequired(protocol, event);
     protocol.save();
 
     // Create a new user if one doesn't exist
@@ -255,6 +249,7 @@ export function handleSettleMakerOrder(event: SettleMakerOrderEvent): void {
 export function handleSwap(event: SwapEvent): void {
     const protocol = GridexProtocol.load("GridexProtocol") as GridexProtocol;
     protocol.swapCount = protocol.swapCount.plus(BIG_INT_ONE);
+    saveUniqueTransactionIfRequired(protocol, event);
     protocol.save();
 
     // Update user stats
@@ -368,6 +363,11 @@ export function handleChangeBundleForSwap(event: ChangeBundleForSwapEvent): void
 }
 
 export function handleCollect(event: CollectEvent): void {
+    const protocol = mustLoadProtocol();
+    if (saveUniqueTransactionIfRequired(protocol, event)) {
+        protocol.save();
+    }
+
     // Create a new transaction history
     const tx = new TransactionHistory(event.transaction.hash.toHexString() + ":" + event.logIndex.toString());
     tx.grid = event.address.toHexString();
@@ -387,6 +387,7 @@ export function handleCollect(event: CollectEvent): void {
 export function handleFlash(event: FlashEvent): void {
     const protocol = GridexProtocol.load("GridexProtocol") as GridexProtocol;
     protocol.flashCount = protocol.flashCount.plus(BIG_INT_ONE);
+    saveUniqueTransactionIfRequired(protocol, event);
     protocol.save();
 
     const grid = mustLoadGrid(event.address);
@@ -424,22 +425,6 @@ function mustLoadToken(address: string): Token {
 
 function mustLoadGrid(address: Address): Grid {
     return Grid.load(address.toHexString()) as Grid;
-}
-
-function loadOrCreateUser(protocol: GridexProtocol, address: Address, block: BigInt, timestamp: BigInt): UniqueUser {
-    let uniqueUser = UniqueUser.load(address.toHexString());
-    if (uniqueUser == null) {
-        protocol.userCount = protocol.userCount.plus(BIG_INT_ONE);
-        protocol.save();
-
-        uniqueUser = new UniqueUser(address.toHexString());
-        uniqueUser.orderCount = BIG_INT_ZERO;
-        uniqueUser.flashCount = BIG_INT_ZERO;
-        uniqueUser.swapCount = BIG_INT_ZERO;
-        uniqueUser.createdBlock = block;
-        uniqueUser.createdTimestamp = timestamp;
-    }
-    return uniqueUser as UniqueUser;
 }
 
 function calculatePrice0(priceX96: BigInt, decimals0: i32, decimals1: i32): BigDecimal {
