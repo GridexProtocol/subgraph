@@ -1,38 +1,38 @@
 {
-  "name": "subgraph",
-  "license": "GPL-2.0-or-later",
-  "homepage": "https://www.gridex.org",
-  "keywords": [
-    "gridex",
-    "subgraph",
-    "gridexprotocol",
-    "ethereum"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/gridexprotocol/subgraph"
-  },
-  "bugs": {
-    "url": "https://github.com/gridexprotocol/subgraph/issues"
-  },
-  "engines": {
-    "node": ">=10"
-  },
-  "scripts": {
-    "rebuild-goerli": "rm -rf generated && rm -rf build && cd src/goerli && graph codegen -o ../../generated && graph build -o ../../build",
-    "deploy-goerli": "cd src/goerli && graph deploy --studio core-subgraph-goerli",
-    "rebuild-arbitrum": "rm -rf generated && rm -rf build && cd src/arbitrum && graph codegen -o ../../generated && graph build -o ../../build",
-    "deploy-arbitrum": "cd src/arbitrum && graph deploy --studio core-subgraph-arbitrum",
-    "create-local": "graph create --node http://localhost:8020/ subgraph",
-    "remove-local": "graph remove --node http://localhost:8020/ subgraph",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 subgraph",
-    "test": "graph test"
-  },
-  "dependencies": {
-    "@graphprotocol/graph-cli": "0.40.0",
-    "@graphprotocol/graph-ts": "0.29.1"
-  },
-  "devDependencies": {
-    "matchstick-as": "0.5.0"
-  }
+    "name": "subgraph",
+    "license": "GPL-2.0-or-later",
+    "homepage": "https://www.gridex.org",
+    "keywords": [
+        "gridex",
+        "subgraph",
+        "gridexprotocol",
+        "ethereum"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/gridexprotocol/subgraph"
+    },
+    "bugs": {
+        "url": "https://github.com/gridexprotocol/subgraph/issues"
+    },
+    "engines": {
+        "node": ">=10"
+    },
+    "scripts": {
+        "rebuild-goerli": "rm -rf generated && rm -rf build && cd src/goerli && graph codegen -o ../../generated && graph build -o ../../build",
+        "deploy-goerli": "cd src/goerli && graph deploy --studio core-subgraph-goerli",
+        "rebuild-arbitrum": "rm -rf generated && rm -rf build && cd src/arbitrum && graph codegen -o ../../generated && graph build -o ../../build",
+        "deploy-arbitrum": "cd src/arbitrum && graph deploy --studio core-subgraph-arbitrum-v2",
+        "create-local": "graph create --node http://localhost:8020/ subgraph",
+        "remove-local": "graph remove --node http://localhost:8020/ subgraph",
+        "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 subgraph",
+        "test": "graph test"
+    },
+    "dependencies": {
+        "@graphprotocol/graph-cli": "0.40.0",
+        "@graphprotocol/graph-ts": "0.29.1"
+    },
+    "devDependencies": {
+        "matchstick-as": "0.5.0"
+    }
 }

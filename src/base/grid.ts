@@ -12,7 +12,7 @@ import {Grid, Token, Bundle, Order, Boundary, TransactionHistory, GridexProtocol
 import {Address, BigInt, BigDecimal} from "@graphprotocol/graph-ts";
 import {log} from "@graphprotocol/graph-ts";
 import {updateGridCandle} from "./candle";
-import {BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO} from "./helper/consts";
+import {BIG_DECIMAL_ONE, BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO} from "./helper/consts";
 import {loadOrCreateUser, saveUniqueTransactionIfRequired} from "./helper/stats";
 
 export function handleInitialize(event: InitializeEvent): void {
@@ -200,7 +200,7 @@ export function handleSettleMakerOrder(event: SettleMakerOrderEvent): void {
     order.takerFeeAmountOut = event.params.takerFeeAmountOut;
     // Fill price
     const filled = order.makerAmountIn.minus(order.makerAmountOut);
-    if (filled.gt(BIG_INT_ZERO)) {
+    if (filled.gt(BIG_INT_ZERO) && event.params.takerAmountOut.gt(BIG_INT_ZERO)) {
         if (order.zero) {
             order.avgPrice = calculatePrice0(
                 event.params.takerAmountOut.leftShift(96).div(filled),
@@ -313,23 +313,27 @@ export function handleSwap(event: SwapEvent): void {
     tx.amount1 = event.params.amount1;
     tx.amountTakerFee = fee0.gt(BIG_INT_ZERO) ? fee0 : fee1;
     if (fee0.gt(BIG_INT_ZERO)) {
-        tx.avgPrice = calculatePrice0(
-            event.params.amount1
-                .abs()
-                .leftShift(96)
-                .div(event.params.amount0.minus(fee0)),
-            token0.decimals,
-            token1.decimals
-        );
+        if (event.params.amount0.minus(fee0).gt(BIG_INT_ZERO)) {
+            tx.avgPrice = calculatePrice0(
+                event.params.amount1
+                    .abs()
+                    .leftShift(96)
+                    .div(event.params.amount0.minus(fee0)),
+                token0.decimals,
+                token1.decimals
+            );
+        }
     } else {
-        tx.avgPrice = calculatePrice0(
-            event.params.amount1
-                .minus(fee1)
-                .leftShift(96)
-                .div(event.params.amount0.abs()),
-            token0.decimals,
-            token1.decimals
-        );
+        if (event.params.amount0.abs().gt(BIG_INT_ZERO)) {
+            tx.avgPrice = calculatePrice0(
+                event.params.amount1
+                    .minus(fee1)
+                    .leftShift(96)
+                    .div(event.params.amount0.abs()),
+                token0.decimals,
+                token1.decimals
+            );
+        }
     }
     tx.blockNumber = event.block.number;
     tx.blockTimestamp = event.block.timestamp;
@@ -448,5 +452,5 @@ function calculatePrice0(priceX96: BigInt, decimals0: i32, decimals1: i32): BigD
 }
 
 function calculatePrice1(price0: BigDecimal): BigDecimal {
-    return BigDecimal.fromString("1").div(price0);
+    return BIG_DECIMAL_ONE.div(price0);
 }

@@ -1,6 +1,11 @@
 specVersion: 0.0.5
 schema:
   file: ../../schema.graphql
+features:
+  - grafting
+graft:
+  base: QmQBfzGPrJ1EMQAK3Fuj66Ba7jWFBuLFmWS5yD9WPvdnJd
+  block: 76565279
 dataSources:
   - kind: ethereum
     name: GridFactory
