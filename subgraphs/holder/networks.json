@@ -1,0 +1,8 @@
+{
+    "arbitrum-one": {
+        "GDX": {
+            "address": "0x2F27118E3D2332aFb7d165140Cf1bB127eA6975d",
+            "startBlock": 66068098
+        }
+    }
+}

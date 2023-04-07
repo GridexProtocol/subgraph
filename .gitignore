@@ -1,7 +1,7 @@
 generated
 node_modules
 build
-src/**/abis
+subgraphs/**/src/**/abis
 
 .DS_Store
 .vscode

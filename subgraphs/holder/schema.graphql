@@ -1,0 +1,13 @@
+type Holder @entity {
+    "the address of the holder"
+    id: Bytes!
+    "the amount of the token"
+    amount: BigDecimal!
+}
+
+type TotalSupply @entity {
+    "the id of the total supply"
+    id: ID!
+    "the total supply of the token"
+    amount: BigDecimal!
+}
