@@ -5,9 +5,11 @@ type Holder @entity {
     amount: BigDecimal!
 }
 
-type TotalSupply @entity {
+type Overview @entity {
     "the id of the total supply"
     id: ID!
     "the total supply of the token"
-    amount: BigDecimal!
+    totalSupply: BigDecimal!
+    "the holders of the token"
+    holders: BigInt!
 }

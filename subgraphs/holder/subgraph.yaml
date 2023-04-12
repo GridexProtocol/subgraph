@@ -15,7 +15,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Holder
-        - TotalSupply
+        - Overview
       abis:
         - name: GDX
           file: ./abis/GDX.json
