@@ -148,6 +148,8 @@ type Order @entity {
     settledBlock: BigInt!
     "the block timestamp when the order is settled"
     settledTimestamp: BigInt!
+    "the settled tx hash when the order is settled"
+    settledTxHash: Bytes!
     "the lower boundary of the order"
     boundaryLower: Int!
     "the amount of token0 or token1 that the maker added"
@@ -164,6 +166,8 @@ type Order @entity {
     placedBlock: BigInt!
     "the block timestamp when the order is placed"
     placedTimestamp: BigInt!
+    "the placed tx hash when the order is placed"
+    placedTxHash: Bytes!
 }
 
 type Boundary @entity {
