@@ -8,9 +8,8 @@ import {
     SettleMakerOrder as SettleMakerOrderEvent,
     Swap as SwapEvent
 } from "../../generated/templates/Grid/Grid";
-import {Grid, Token, Bundle, Order, Boundary, TransactionHistory, GridexProtocol} from "../../generated/schema";
-import {Address, BigInt, BigDecimal} from "@graphprotocol/graph-ts";
-import {log} from "@graphprotocol/graph-ts";
+import {Boundary, Bundle, Grid, GridexProtocol, Order, Token, TransactionHistory} from "../../generated/schema";
+import {Address, BigDecimal, BigInt, Bytes, log} from "@graphprotocol/graph-ts";
 import {updateGridCandle} from "./candle";
 import {BIG_DECIMAL_ONE, BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO} from "./helper/consts";
 import {loadOrCreateUser, saveUniqueTransactionIfRequired} from "./helper/stats";
@@ -110,6 +109,7 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
     order.settled = false;
     order.settledBlock = BIG_INT_ZERO;
     order.settledTimestamp = BIG_INT_ZERO;
+    order.settledTxHash = Bytes.empty();
     order.boundaryLower = event.params.boundaryLower;
     order.makerAmountIn = event.params.amount;
     order.makerAmountOut = BIG_INT_ZERO;
@@ -118,6 +118,7 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
     order.avgPrice = BIG_DECIMAL_ZERO;
     order.placedBlock = event.block.number;
     order.placedTimestamp = event.block.timestamp;
+    order.placedTxHash = event.transaction.hash;
     order.save();
 
     // Create a new transaction history
@@ -195,6 +196,7 @@ export function handleSettleMakerOrder(event: SettleMakerOrderEvent): void {
     order.settled = true;
     order.settledBlock = event.block.number;
     order.settledTimestamp = event.block.timestamp;
+    order.settledTxHash = event.transaction.hash;
     order.makerAmountOut = event.params.makerAmountOut;
     order.takerAmountOut = event.params.takerAmountOut;
     order.takerFeeAmountOut = event.params.takerFeeAmountOut;
