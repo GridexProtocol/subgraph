@@ -17,6 +17,12 @@ type GridexProtocol @entity {
     userCount: BigInt!
     "the number of transactions interacting with Gridex Protocol"
     txCount: BigInt!
+    "total usd volume of Gridex Protocol"
+    volumeUSD: BigDecimal!
+    "total usd locked of Gridex Protocol"
+    tvlUSD: BigDecimal!
+    "total fees earned by maker"
+    feeUSD: BigDecimal!
 }
 
 type Token @entity {
@@ -34,6 +40,22 @@ type Token @entity {
     gridCount: BigInt!
     "total locked amount of Grids that contain this token"
     totalLocked: BigInt!
+    "grids token is in that are whitelisted for usd pricing"
+    whitelistGrids: [Grid!]!
+    "usd price of the token"
+    priceUSD: BigDecimal!
+    "usd volume of the token"
+    volumeUSD: BigDecimal!
+    "usd of total locked token"
+    totalLockedUSD: BigDecimal!
+    # derived fields
+    candles1M: [TokenCandle1M!]! @derivedFrom(field: "token")
+    candles5M: [TokenCandle5M!]! @derivedFrom(field: "token")
+    candles15M: [TokenCandle15M!]! @derivedFrom(field: "token")
+    candles30M: [TokenCandle30M!]! @derivedFrom(field: "token")
+    candles1H: [TokenCandle1H!]! @derivedFrom(field: "token")
+    candles4H: [TokenCandle4H!]! @derivedFrom(field: "token")
+    candles1D: [TokenCandle1D!]! @derivedFrom(field: "token")
 }
 
 type Grid @entity {
@@ -73,6 +95,10 @@ type Grid @entity {
     flashCount: BigInt!
     "the number of swap transactions in the grid"
     swapCount: BigInt!
+    "total value locked pricing in usd"
+    tvlUSD: BigDecimal!
+    "usd volume of the grid"
+    volumeUSD: BigDecimal!
     # derived fields
     transactionHistories: [TransactionHistory!]! @derivedFrom(field: "grid")
     boundaries: [Boundary!]! @derivedFrom(field: "grid")
@@ -206,6 +232,209 @@ type UniqueTransaction @entity(immutable: true) {
     timestamp: BigInt!
 }
 
+type TokenCandle1M @entity {
+    "id format: {tokenAddress}:{truncateTimestamp}"
+    id: ID!
+    "token that contains the candle"
+    token: Token!
+    "start time of the current candle"
+    ts: BigInt!
+    "total tokens locked of the current candle"
+    totalLocked: BigInt!
+    "usd locked of the current candle"
+    totalLockedUSD: BigDecimal!
+    "volume of the current candle"
+    volume: BigInt!
+    "volume usd of the current candle"
+    volumeUSD: BigDecimal!
+    "fee usd of the current candle"
+    feeUSD: BigDecimal!
+    "the highest usd price of the current candle"
+    high: BigDecimal!
+    "the lowest usd price of the current candle"
+    low: BigDecimal!
+    "the first usd price of the current candle"
+    open: BigDecimal!
+    "the close usd price of the current candle"
+    close: BigDecimal!
+    "the number of transactions"
+    txCount: BigInt!
+}
+
+type TokenCandle5M @entity {
+    "id format: {tokenAddress}:{truncateTimestamp}"
+    id: ID!
+    "token that contains the candle"
+    token: Token!
+    "start time of the current candle"
+    ts: BigInt!
+    "total tokens locked of the current candle"
+    totalLocked: BigInt!
+    "usd locked of the current candle"
+    totalLockedUSD: BigDecimal!
+    "volume of the current candle"
+    volume: BigInt!
+    "volume usd of the current candle"
+    volumeUSD: BigDecimal!
+    "fee usd of the current candle"
+    feeUSD: BigDecimal!
+    "the highest usd price of the current candle"
+    high: BigDecimal!
+    "the lowest usd price of the current candle"
+    low: BigDecimal!
+    "the first usd price of the current candle"
+    open: BigDecimal!
+    "the close usd price of the current candle"
+    close: BigDecimal
+    "the number of transactions"
+    txCount: BigInt!
+}
+
+type TokenCandle15M @entity {
+    "id format: {tokenAddress}:{truncateTimestamp}"
+    id: ID!
+    "token that contains the candle"
+    token: Token!
+    "start time of the current candle"
+    ts: BigInt!
+    "total tokens locked of the current candle"
+    totalLocked: BigInt!
+    "usd locked of the current candle"
+    totalLockedUSD: BigDecimal!
+    "volume of the current candle"
+    volume: BigInt!
+    "volume usd of the current candle"
+    volumeUSD: BigDecimal!
+    "fee usd of the current candle"
+    feeUSD: BigDecimal!
+    "the highest usd price of the current candle"
+    high: BigDecimal!
+    "the lowest usd price of the current candle"
+    low: BigDecimal!
+    "the first usd price of the current candle"
+    open: BigDecimal!
+    "the close usd price of the current candle"
+    close: BigDecimal
+    "the number of transactions"
+    txCount: BigInt!
+}
+
+type TokenCandle30M @entity {
+    "id format: {tokenAddress}:{truncateTimestamp}"
+    id: ID!
+    "token that contains the candle"
+    token: Token!
+    "start time of the current candle"
+    ts: BigInt!
+    "total tokens locked of the current candle"
+    totalLocked: BigInt!
+    "usd locked of the current candle"
+    totalLockedUSD: BigDecimal!
+    "volume of the current candle"
+    volume: BigInt!
+    "volume usd of the current candle"
+    volumeUSD: BigDecimal!
+    "fee usd of the current candle"
+    feeUSD: BigDecimal!
+    "the highest usd price of the current candle"
+    high: BigDecimal!
+    "the lowest usd price of the current candle"
+    low: BigDecimal!
+    "the first usd price of the current candle"
+    open: BigDecimal!
+    "the close usd price of the current candle"
+    close: BigDecimal
+    "the number of transactions"
+    txCount: BigInt!
+}
+
+type TokenCandle1H @entity {
+    "id format: {tokenAddress}:{truncateTimestamp}"
+    id: ID!
+    "token that contains the candle"
+    token: Token!
+    "start time of the current candle"
+    ts: BigInt!
+    "total tokens locked of the current candle"
+    totalLocked: BigInt!
+    "usd locked of the current candle"
+    totalLockedUSD: BigDecimal!
+    "volume of the current candle"
+    volume: BigInt!
+    "volume usd of the current candle"
+    volumeUSD: BigDecimal!
+    "fee usd of the current candle"
+    feeUSD: BigDecimal!
+    "the highest usd price of the current candle"
+    high: BigDecimal!
+    "the lowest usd price of the current candle"
+    low: BigDecimal!
+    "the first usd price of the current candle"
+    open: BigDecimal!
+    "the close usd price of the current candle"
+    close: BigDecimal
+    "the number of transactions"
+    txCount: BigInt!
+}
+
+type TokenCandle4H @entity {
+    "id format: {tokenAddress}:{truncateTimestamp}"
+    id: ID!
+    "token that contains the candle"
+    token: Token!
+    "start time of the current candle"
+    ts: BigInt!
+    "total tokens locked of the current candle"
+    totalLocked: BigInt!
+    "usd locked of the current candle"
+    totalLockedUSD: BigDecimal!
+    "volume of the current candle"
+    volume: BigInt!
+    "volume usd of the current candle"
+    volumeUSD: BigDecimal!
+    "fee usd of the current candle"
+    feeUSD: BigDecimal!
+    "the highest usd price of the current candle"
+    high: BigDecimal!
+    "the lowest usd price of the current candle"
+    low: BigDecimal!
+    "the first usd price of the current candle"
+    open: BigDecimal!
+    "the close usd price of the current candle"
+    close: BigDecimal
+    "the number of transactions"
+    txCount: BigInt!
+}
+
+type TokenCandle1D @entity {
+    "id format: {tokenAddress}:{truncateTimestamp}"
+    id: ID!
+    "token that contains the candle"
+    token: Token!
+    "start time of the current candle"
+    ts: BigInt!
+    "total tokens locked of the current candle"
+    totalLocked: BigInt!
+    "usd locked of the current candle"
+    totalLockedUSD: BigDecimal!
+    "volume of the current candle"
+    volume: BigInt!
+    "volume usd of the current candle"
+    volumeUSD: BigDecimal!
+    "fee usd of the current candle"
+    feeUSD: BigDecimal!
+    "the highest usd price of the current candle"
+    high: BigDecimal!
+    "the lowest usd price of the current candle"
+    low: BigDecimal!
+    "the first usd price of the current candle"
+    open: BigDecimal!
+    "the close usd price of the current candle"
+    close: BigDecimal
+    "the number of transactions"
+    txCount: BigInt!
+}
+
 type GridCandle1M @entity {
     "the format is {gridAddress}:{truncateTimestamp}"
     id: ID!
@@ -225,11 +454,17 @@ type GridCandle1M @entity {
     volume0: BigInt!
     "the trading volume of token1"
     volume1: BigInt!
+    "usd amount of the volume"
+    volumeUSD: BigDecimal!
+    "usd amount of tvl"
+    tvlUSD: BigDecimal!
     "the amount of fees that takers have paid for token0"
     fee0: BigInt!
     "the amount of fees that takers have paid for token1"
     fee1: BigInt!
-    "the number of swap transactions"
+    "usd amount of the fee"
+    feeUSD: BigDecimal!
+    "the number of transactions"
     txCount: BigInt!
 }
 
@@ -252,11 +487,17 @@ type GridCandle5M @entity {
     volume0: BigInt!
     "the trading volume of token1"
     volume1: BigInt!
+    "usd amount of the volume"
+    volumeUSD: BigDecimal!
+    "usd amount of tvl"
+    tvlUSD: BigDecimal!
     "the amount of fees that takers have paid for token0"
     fee0: BigInt!
     "the amount of fees that takers have paid for token1"
     fee1: BigInt!
-    "the number of swap transactions"
+    "usd amount of the fee"
+    feeUSD: BigDecimal!
+    "the number of transactions"
     txCount: BigInt!
 }
 
@@ -279,11 +520,17 @@ type GridCandle15M @entity {
     volume0: BigInt!
     "the trading volume of token1"
     volume1: BigInt!
+    "usd amount of the volume"
+    volumeUSD: BigDecimal!
+    "usd amount of tvl"
+    tvlUSD: BigDecimal!
     "the amount of fees that takers have paid for token0"
     fee0: BigInt!
     "the amount of fees that takers have paid for token1"
     fee1: BigInt!
-    "the number of swap transactions"
+    "usd amount of the fee"
+    feeUSD: BigDecimal!
+    "the number of transactions"
     txCount: BigInt!
 }
 
@@ -306,11 +553,17 @@ type GridCandle30M @entity {
     volume0: BigInt!
     "the trading volume of token1"
     volume1: BigInt!
+    "usd amount of the volume"
+    volumeUSD: BigDecimal!
+    "usd amount of tvl"
+    tvlUSD: BigDecimal!
     "the amount of fees that takers have paid for token0"
     fee0: BigInt!
     "the amount of fees that takers have paid for token1"
     fee1: BigInt!
-    "the number of swap transactions"
+    "usd amount of the fee"
+    feeUSD: BigDecimal!
+    "the number of transactions"
     txCount: BigInt!
 }
 
@@ -333,11 +586,17 @@ type GridCandle1H @entity {
     volume0: BigInt!
     "the trading volume of token1"
     volume1: BigInt!
+    "usd amount of the volume"
+    volumeUSD: BigDecimal!
+    "usd amount of tvl"
+    tvlUSD: BigDecimal!
     "the amount of fees that takers have paid for token0"
     fee0: BigInt!
     "the amount of fees that takers have paid for token1"
     fee1: BigInt!
-    "the number of swap transactions"
+    "usd amount of the fee"
+    feeUSD: BigDecimal!
+    "the number of transactions"
     txCount: BigInt!
 }
 
@@ -360,11 +619,17 @@ type GridCandle4H @entity {
     volume0: BigInt!
     "the trading volume of token1"
     volume1: BigInt!
+    "usd amount of the volume"
+    volumeUSD: BigDecimal!
+    "usd amount of tvl"
+    tvlUSD: BigDecimal!
     "the amount of fees that takers have paid for token0"
     fee0: BigInt!
     "the amount of fees that takers have paid for token1"
     fee1: BigInt!
-    "the number of swap transactions"
+    "usd amount of the fee"
+    feeUSD: BigDecimal!
+    "the number of transactions"
     txCount: BigInt!
 }
 
@@ -387,11 +652,17 @@ type GridCandle1D @entity {
     volume0: BigInt!
     "the trading volume of token1"
     volume1: BigInt!
+    "usd amount of the volume"
+    volumeUSD: BigDecimal!
+    "usd amount of tvl"
+    tvlUSD: BigDecimal!
     "the amount of fees that takers have paid for token0"
     fee0: BigInt!
     "the amount of fees that takers have paid for token1"
     fee1: BigInt!
-    "the number of swap transactions"
+    "usd amount of the fee"
+    feeUSD: BigDecimal!
+    "the number of transactions"
     txCount: BigInt!
 }
 
@@ -412,6 +683,8 @@ type TransactionHistory @entity(immutable: true) {
     amount1: BigInt!
     "the amount of fees, only used when the type is Swap"
     amountTakerFee: BigInt!
+    "usd amount of this transaction"
+    amountUSD: BigDecimal!
     "the average price of the Swap"
     avgPrice: BigDecimal!
     blockNumber: BigInt!

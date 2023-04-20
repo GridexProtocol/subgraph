@@ -8,16 +8,27 @@ import {
     SettleMakerOrder as SettleMakerOrderEvent,
     Swap as SwapEvent
 } from "../../generated/templates/Grid/Grid";
-import {Boundary, Bundle, Grid, GridexProtocol, Order, Token, TransactionHistory} from "../../generated/schema";
-import {Address, BigDecimal, BigInt, Bytes, log} from "@graphprotocol/graph-ts";
-import {updateGridCandle} from "./candle";
+import {Grid, Token, Bundle, Order, Boundary, TransactionHistory, GridexProtocol} from "../../generated/schema";
+import {BigInt, BigDecimal, Bytes} from "@graphprotocol/graph-ts";
+import {log} from "@graphprotocol/graph-ts";
+import {updateGridCandles, updateGridCandlesParam, updateTokenCandles, updateTokenCandlesParam} from "./candle";
 import {BIG_DECIMAL_ONE, BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO} from "./helper/consts";
 import {loadOrCreateUser, saveUniqueTransactionIfRequired} from "./helper/stats";
+import {findUSDPerToken} from "./pricing";
+import {mustLoadGrid, mustLoadProtocol, mustLoadToken} from "./helper/loader";
+import {toAmountDecimal} from "./helper/util";
 
 export function handleInitialize(event: InitializeEvent): void {
     const grid = mustLoadGrid(event.address);
+
     const token0 = mustLoadToken(grid.token0);
+    token0.priceUSD = findUSDPerToken(token0);
+    token0.save();
+
     const token1 = mustLoadToken(grid.token1);
+    token1.priceUSD = findUSDPerToken(token1);
+    token1.save();
+
     grid.boundary = event.params.boundary;
     grid.priceX96 = event.params.priceX96;
     grid.price0 = calculatePrice0(event.params.priceX96, token0.decimals, token1.decimals);
@@ -32,7 +43,6 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
     protocol.orderCount = protocol.orderCount.plus(BIG_INT_ONE);
     protocol.unsettledOrderCount = protocol.unsettledOrderCount.plus(BIG_INT_ONE);
     saveUniqueTransactionIfRequired(protocol, event);
-    protocol.save();
 
     // Update user stats
     const uniqueUser = loadOrCreateUser(protocol, event.transaction.from, event.block.number, event.block.timestamp);
@@ -40,6 +50,8 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
     uniqueUser.save();
 
     const grid = mustLoadGrid(event.address);
+
+    protocol.tvlUSD = protocol.tvlUSD.minus(grid.tvlUSD);
     // Create a new bundle if one doesn't exist
     let bundle = Bundle.load(event.address.toHexString() + ":" + event.params.bundleId.toString());
     if (bundle == null) {
@@ -79,24 +91,38 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
     boundary.makerAmountRemaining = boundary.makerAmountRemaining.plus(event.params.amount);
     boundary.save();
 
+    let token0 = mustLoadToken(grid.token0);
+    let token1 = mustLoadToken(grid.token1);
+
     // Update grid
     if (event.params.zero) {
         grid.locked0 = grid.locked0.plus(event.params.amount);
     } else {
         grid.locked1 = grid.locked1.plus(event.params.amount);
     }
+
+    let locked0Decimal = toAmountDecimal(grid.locked0, token0.decimals);
+    let locked1Decimal = toAmountDecimal(grid.locked1, token1.decimals);
+    grid.tvlUSD = locked0Decimal.times(token0.priceUSD).plus(locked1Decimal.times(token1.priceUSD));
     grid.orderCount = grid.orderCount.plus(BIG_INT_ONE);
     grid.unsettledOrderCount = grid.unsettledOrderCount.plus(BIG_INT_ONE);
     grid.save();
 
+    protocol.tvlUSD = protocol.tvlUSD.plus(grid.tvlUSD);
+    protocol.save();
+
     // Update token
     let token: Token;
+    let amountUSD: BigDecimal;
     if (event.params.zero) {
-        token = mustLoadToken(grid.token0);
+        token = token0;
+        amountUSD = toAmountDecimal(event.params.amount, token0.decimals).plus(token0.priceUSD);
     } else {
-        token = mustLoadToken(grid.token1);
+        token = token1;
+        amountUSD = toAmountDecimal(event.params.amount, token1.decimals).plus(token1.priceUSD);
     }
     token.totalLocked = token.totalLocked.plus(event.params.amount);
+    token.totalLockedUSD = toAmountDecimal(token.totalLocked, token.decimals).times(token.priceUSD);
     token.save();
 
     // Create a new order
@@ -135,15 +161,46 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
         tx.amount1 = event.params.amount;
     }
     tx.amountTakerFee = BIG_INT_ZERO;
+    tx.amountUSD = amountUSD;
     tx.avgPrice = BIG_DECIMAL_ZERO;
     tx.blockNumber = event.block.number;
     tx.blockTimestamp = event.block.timestamp;
     tx.transactionHash = event.transaction.hash;
     tx.save();
+
+    // update candles
+    let updateGridCandlesParam: updateGridCandlesParam = {
+        event: event,
+        price: grid.price0,
+        volume0: BIG_INT_ZERO,
+        volume1: BIG_INT_ZERO,
+        volumeUSD: BIG_DECIMAL_ZERO,
+        fee0: BIG_INT_ZERO,
+        fee1: BIG_INT_ZERO,
+        feeUSD: BIG_DECIMAL_ZERO,
+        tvlUSD: grid.tvlUSD
+    };
+    updateGridCandles(updateGridCandlesParam);
+
+    let updateTokenCandlesParam: updateTokenCandlesParam = {
+        event: event,
+        tokenID: token.id,
+        price: token.priceUSD,
+        volume: BIG_INT_ZERO,
+        volumeUSD: BIG_DECIMAL_ZERO,
+        fee: BIG_INT_ZERO,
+        feeUSD: BIG_DECIMAL_ZERO,
+        totalLocked: token.totalLocked,
+        totalLockedUSD: token.totalLockedUSD
+    };
+    updateTokenCandles(updateTokenCandlesParam);
 }
 
 export function handleChangeBundleForSettleOrder(event: ChangeBundleForSettleOrderEvent): void {
+    const protocol = mustLoadProtocol();
     const grid = mustLoadGrid(event.address);
+    protocol.tvlUSD = protocol.tvlUSD.minus(grid.tvlUSD);
+
     // Update bundle
     const bundle = Bundle.load(event.address.toHexString() + ":" + event.params.bundleId.toString()) as Bundle;
     bundle.makerAmountTotal = bundle.makerAmountTotal.plus(event.params.makerAmountTotal);
@@ -163,18 +220,54 @@ export function handleChangeBundleForSettleOrder(event: ChangeBundleForSettleOrd
     } else {
         grid.locked1 = grid.locked1.plus(event.params.makerAmountRemaining);
     }
+    const token0 = mustLoadToken(grid.token0);
+    const token1 = mustLoadToken(grid.token1);
+    const locked0Decimal = toAmountDecimal(grid.locked0, token0.decimals);
+    const locked1Decimal = toAmountDecimal(grid.locked1, token1.decimals);
+    grid.tvlUSD = locked0Decimal.times(token0.priceUSD).plus(locked1Decimal.times(token1.priceUSD));
     grid.unsettledOrderCount = grid.unsettledOrderCount.minus(BIG_INT_ONE);
     grid.save();
+
+    protocol.tvlUSD = protocol.tvlUSD.plus(grid.tvlUSD);
+    protocol.save();
 
     // Update token
     let token: Token;
     if (bundle.zero) {
-        token = mustLoadToken(grid.token0);
+        token = token0;
     } else {
-        token = mustLoadToken(grid.token1);
+        token = token1;
     }
     token.totalLocked = token.totalLocked.plus(event.params.makerAmountRemaining);
+    token.totalLockedUSD = toAmountDecimal(token.totalLocked, token.decimals).times(token.priceUSD);
     token.save();
+
+    // update candles
+    let updateGridCandlesParam: updateGridCandlesParam = {
+        event: event,
+        price: grid.price0,
+        volume0: BIG_INT_ZERO,
+        volume1: BIG_INT_ZERO,
+        volumeUSD: BIG_DECIMAL_ZERO,
+        fee0: BIG_INT_ZERO,
+        fee1: BIG_INT_ZERO,
+        feeUSD: BIG_DECIMAL_ZERO,
+        tvlUSD: grid.tvlUSD
+    };
+    updateGridCandles(updateGridCandlesParam);
+
+    let updateTokenCandlesParam: updateTokenCandlesParam = {
+        event: event,
+        tokenID: token.id,
+        price: token.priceUSD,
+        volume: BIG_INT_ZERO,
+        volumeUSD: BIG_DECIMAL_ZERO,
+        fee: BIG_INT_ZERO,
+        feeUSD: BIG_DECIMAL_ZERO,
+        totalLocked: token.totalLocked,
+        totalLockedUSD: token.totalLockedUSD
+    };
+    updateTokenCandles(updateTokenCandlesParam);
 }
 
 export function handleSettleMakerOrder(event: SettleMakerOrderEvent): void {
@@ -226,6 +319,7 @@ export function handleSettleMakerOrder(event: SettleMakerOrderEvent): void {
     bundle.save();
 
     // Create a new transaction history
+    let amountUSD: BigDecimal;
     const tx = new TransactionHistory(event.transaction.hash.toHexString() + ":" + event.logIndex.toString());
     tx.grid = grid.id;
     tx.type = "SettleMakerOrder";
@@ -234,11 +328,20 @@ export function handleSettleMakerOrder(event: SettleMakerOrderEvent): void {
     if (order.zero) {
         tx.amount0 = event.params.makerAmountOut;
         tx.amount1 = event.params.takerAmountOut;
+        const makerAmountUSD = toAmountDecimal(event.params.makerAmountOut, token0.decimals).times(token0.priceUSD);
+        const takerAmountUSD = toAmountDecimal(event.params.takerAmountOut, token1.decimals).times(token1.priceUSD);
+        const feeUSD = toAmountDecimal(event.params.takerFeeAmountOut, token1.decimals).times(token1.priceUSD);
+        amountUSD = makerAmountUSD.plus(takerAmountUSD).plus(feeUSD);
     } else {
         tx.amount0 = event.params.takerAmountOut;
         tx.amount1 = event.params.makerAmountOut;
+        const makerAmountUSD = toAmountDecimal(event.params.makerAmountOut, token1.decimals).times(token1.priceUSD);
+        const takerAmountUSD = toAmountDecimal(event.params.takerAmountOut, token0.decimals).times(token0.priceUSD);
+        const feeUSD = toAmountDecimal(event.params.takerFeeAmountOut, token0.decimals).times(token0.priceUSD);
+        amountUSD = makerAmountUSD.plus(takerAmountUSD).plus(feeUSD);
     }
     tx.amountTakerFee = event.params.takerFeeAmountOut;
+    tx.amountUSD = amountUSD;
     tx.avgPrice = order.avgPrice;
     tx.blockNumber = event.block.number;
     tx.blockTimestamp = event.block.timestamp;
@@ -249,19 +352,27 @@ export function handleSettleMakerOrder(event: SettleMakerOrderEvent): void {
 }
 
 export function handleSwap(event: SwapEvent): void {
+    const grid = mustLoadGrid(event.address);
+    const token0 = mustLoadToken(grid.token0);
+    const token1 = mustLoadToken(grid.token1);
+
+    const amount0DecimalAbs = toAmountDecimal(event.params.amount0.abs(), token0.decimals);
+    const amount1DecimalAbs = toAmountDecimal(event.params.amount1.abs(), token1.decimals);
+    const amount0USD = amount0DecimalAbs.times(token0.priceUSD);
+    const amount1USD = amount1DecimalAbs.times(token1.priceUSD);
+    const volumeUSD = calculateVolume(amount0USD, amount1USD);
+
     const protocol = GridexProtocol.load("GridexProtocol") as GridexProtocol;
     protocol.swapCount = protocol.swapCount.plus(BIG_INT_ONE);
     saveUniqueTransactionIfRequired(protocol, event);
-    protocol.save();
+    protocol.volumeUSD = protocol.volumeUSD.plus(volumeUSD);
+    protocol.tvlUSD = protocol.tvlUSD.minus(grid.tvlUSD);
 
     // Update user stats
     const uniqueUser = loadOrCreateUser(protocol, event.transaction.from, event.block.number, event.block.timestamp);
     uniqueUser.swapCount = uniqueUser.swapCount.plus(BIG_INT_ONE);
     uniqueUser.save();
 
-    const grid = mustLoadGrid(event.address);
-    const token0 = mustLoadToken(grid.token0);
-    const token1 = mustLoadToken(grid.token1);
     // Update grid
     grid.boundary = event.params.boundary;
     grid.priceX96 = event.params.priceX96;
@@ -269,6 +380,7 @@ export function handleSwap(event: SwapEvent): void {
     grid.price1 = calculatePrice1(grid.price0);
     grid.volume0 = grid.volume0.plus(event.params.amount0.abs());
     grid.volume1 = grid.volume1.plus(event.params.amount1.abs());
+    grid.volumeUSD = grid.volumeUSD.plus(volumeUSD);
     if (event.params.amount0.lt(BIG_INT_ZERO)) {
         grid.locked0 = grid.locked0.plus(event.params.amount0);
     }
@@ -279,17 +391,31 @@ export function handleSwap(event: SwapEvent): void {
     grid.save();
 
     // Update tokens
+    token0.priceUSD = findUSDPerToken(token0);
     token0.volume = token0.volume.plus(event.params.amount0.abs());
+    token0.volumeUSD = token0.volumeUSD.plus(volumeUSD);
     if (event.params.amount0.lt(BIG_INT_ZERO)) {
         token0.totalLocked = token0.totalLocked.plus(event.params.amount0);
+        token0.totalLockedUSD = toAmountDecimal(token0.totalLocked, token0.decimals).times(token0.priceUSD);
     }
     token0.save();
 
+    token1.priceUSD = findUSDPerToken(token1);
     token1.volume = token1.volume.plus(event.params.amount1.abs());
+    token1.volumeUSD = token1.volumeUSD.plus(volumeUSD);
     if (event.params.amount1.lt(BIG_INT_ZERO)) {
         token1.totalLocked = token1.totalLocked.plus(event.params.amount1);
+        token1.totalLockedUSD = toAmountDecimal(token1.totalLocked, token1.decimals).times(token1.priceUSD);
     }
     token1.save();
+
+    let locked0Decimal = toAmountDecimal(grid.locked0, token0.decimals);
+    let locked1Decimal = toAmountDecimal(grid.locked1, token1.decimals);
+    grid.tvlUSD = locked0Decimal.times(token0.priceUSD).plus(locked1Decimal.times(token1.priceUSD));
+    grid.save();
+
+    protocol.tvlUSD = protocol.tvlUSD.plus(grid.tvlUSD);
+    protocol.save();
 
     // Skip kline update if swap amount is zero
     if (event.params.amount0.equals(BIG_INT_ZERO) || event.params.amount1.equals(BIG_INT_ZERO)) {
@@ -299,11 +425,20 @@ export function handleSwap(event: SwapEvent): void {
 
     let fee0 = BIG_INT_ZERO;
     let fee1 = BIG_INT_ZERO;
+    let fee0USD = BIG_DECIMAL_ZERO;
+    let fee1USD = BIG_DECIMAL_ZERO;
+    let feeUSD: BigDecimal;
     if (event.params.amount0.gt(BIG_INT_ZERO)) {
         fee0 = event.params.amount0.times(BigInt.fromString(grid.takerFee.toString())).div(BigInt.fromI64(1000000));
+        feeUSD = toAmountDecimal(fee0, token0.decimals).times(token0.priceUSD);
+        fee0USD = feeUSD;
     } else {
         fee1 = event.params.amount1.times(BigInt.fromString(grid.takerFee.toString())).div(BigInt.fromI64(1000000));
+        feeUSD = toAmountDecimal(fee1, token1.decimals).times(token1.priceUSD);
+        fee1USD = feeUSD;
     }
+    protocol.feeUSD = protocol.feeUSD.plus(feeUSD);
+    protocol.save();
 
     // Create a new transaction history
     const tx = new TransactionHistory(event.transaction.hash.toHexString() + ":" + event.logIndex.toString());
@@ -314,6 +449,7 @@ export function handleSwap(event: SwapEvent): void {
     tx.amount0 = event.params.amount0;
     tx.amount1 = event.params.amount1;
     tx.amountTakerFee = fee0.gt(BIG_INT_ZERO) ? fee0 : fee1;
+    tx.amountUSD = volumeUSD;
     if (fee0.gt(BIG_INT_ZERO)) {
         if (event.params.amount0.minus(fee0).gt(BIG_INT_ZERO)) {
             tx.avgPrice = calculatePrice0(
@@ -342,8 +478,45 @@ export function handleSwap(event: SwapEvent): void {
     tx.transactionHash = event.transaction.hash;
     tx.save();
 
-    // Update grid candle
-    updateGridCandle(event, calculatePrice0(event.params.priceX96, token0.decimals, token1.decimals), fee0, fee1);
+    // update candles
+    let updateGridCandlesParam: updateGridCandlesParam = {
+        event: event,
+        price: calculatePrice0(event.params.priceX96, token0.decimals, token1.decimals),
+        volume0: event.params.amount0.abs(),
+        volume1: event.params.amount1.abs(),
+        volumeUSD: volumeUSD,
+        fee0: fee0,
+        fee1: fee1,
+        feeUSD: feeUSD,
+        tvlUSD: grid.tvlUSD
+    };
+    updateGridCandles(updateGridCandlesParam);
+
+    let updateToken0CandlesParam: updateTokenCandlesParam = {
+        event: event,
+        tokenID: token0.id,
+        price: token0.priceUSD,
+        volume: event.params.amount0.abs(),
+        volumeUSD: volumeUSD,
+        fee: fee0,
+        feeUSD: fee0USD,
+        totalLocked: token0.totalLocked,
+        totalLockedUSD: token0.totalLockedUSD
+    };
+    updateTokenCandles(updateToken0CandlesParam);
+
+    let updateToken1CandlesParam: updateTokenCandlesParam = {
+        event: event,
+        tokenID: token1.id,
+        price: token1.priceUSD,
+        volume: event.params.amount1.abs(),
+        volumeUSD: volumeUSD,
+        fee: fee1,
+        feeUSD: fee1USD,
+        totalLocked: token1.totalLocked,
+        totalLockedUSD: token1.totalLockedUSD
+    };
+    updateTokenCandles(updateToken1CandlesParam);
 }
 
 export function handleChangeBundleForSwap(event: ChangeBundleForSwapEvent): void {
@@ -373,6 +546,11 @@ export function handleCollect(event: CollectEvent): void {
     if (saveUniqueTransactionIfRequired(protocol, event)) {
         protocol.save();
     }
+    const grid = mustLoadGrid(event.address);
+    const token0 = mustLoadToken(grid.token0);
+    const token1 = mustLoadToken(grid.token1);
+    const amount0USD = toAmountDecimal(event.params.amount0, token0.decimals).times(token0.priceUSD);
+    const amount1USD = toAmountDecimal(event.params.amount1, token1.decimals).times(token1.priceUSD);
 
     // Create a new transaction history
     const tx = new TransactionHistory(event.transaction.hash.toHexString() + ":" + event.logIndex.toString());
@@ -383,6 +561,7 @@ export function handleCollect(event: CollectEvent): void {
     tx.amount0 = event.params.amount0;
     tx.amount1 = event.params.amount1;
     tx.amountTakerFee = BIG_INT_ZERO;
+    tx.amountUSD = amount0USD.plus(amount1USD);
     tx.avgPrice = BIG_DECIMAL_ZERO;
     tx.blockNumber = event.block.number;
     tx.blockTimestamp = event.block.timestamp;
@@ -399,6 +578,12 @@ export function handleFlash(event: FlashEvent): void {
     const grid = mustLoadGrid(event.address);
     grid.flashCount = grid.flashCount.plus(BIG_INT_ONE);
     grid.save();
+
+    const token0 = mustLoadToken(grid.token0);
+    const token1 = mustLoadToken(grid.token1);
+    const amountUSD = toAmountDecimal(event.params.amount0, token0.decimals)
+        .times(token0.priceUSD)
+        .plus(toAmountDecimal(event.params.amount1, token1.decimals).times(token1.priceUSD));
 
     // Update user stats
     const uniqueUser = loadOrCreateUser(protocol, event.transaction.from, event.block.number, event.block.timestamp);
@@ -418,19 +603,18 @@ export function handleFlash(event: FlashEvent): void {
     tx.blockNumber = event.block.number;
     tx.blockTimestamp = event.block.timestamp;
     tx.transactionHash = event.transaction.hash;
+    tx.amountUSD = amountUSD;
     tx.save();
 }
 
-function mustLoadProtocol(): GridexProtocol {
-    return GridexProtocol.load("GridexProtocol") as GridexProtocol;
-}
-
-function mustLoadToken(address: string): Token {
-    return Token.load(address) as Token;
-}
-
-function mustLoadGrid(address: Address): Grid {
-    return Grid.load(address.toHexString()) as Grid;
+function calculateVolume(volume0: BigDecimal, volume1: BigDecimal): BigDecimal {
+    if (volume0.equals(BIG_DECIMAL_ZERO)) {
+        return volume1;
+    } else if (volume1.equals(BIG_DECIMAL_ZERO)) {
+        return volume0;
+    } else {
+        return volume0.plus(volume1).div(BigDecimal.fromString("2"));
+    }
 }
 
 function calculatePrice0(priceX96: BigInt, decimals0: i32, decimals1: i32): BigDecimal {
