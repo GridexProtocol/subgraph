@@ -76,6 +76,7 @@ export function updateTokenCandles(param: updateTokenCandlesParam): void {
             entity.volume = BIG_INT_ZERO;
             entity.volumeUSD = BIG_DECIMAL_ZERO;
             entity.feeUSD = BIG_DECIMAL_ZERO;
+            entity.txCount = BIG_INT_ZERO;
             entity.high = param.price;
             entity.low = param.price;
             entity.open = param.price;
@@ -86,6 +87,7 @@ export function updateTokenCandles(param: updateTokenCandlesParam): void {
         entity.volume = entity.volume.plus(param.volume);
         entity.volumeUSD = entity.volumeUSD.plus(param.volumeUSD);
         entity.feeUSD = entity.feeUSD.plus(param.feeUSD);
+        entity.txCount = entity.txCount.plus(BIG_INT_ONE);
         if (param.price.gt(entity.high)) {
             entity.high = param.price;
         }
@@ -104,6 +106,7 @@ export function updateTokenCandles(param: updateTokenCandlesParam): void {
             entity.volume = BIG_INT_ZERO;
             entity.volumeUSD = BIG_DECIMAL_ZERO;
             entity.feeUSD = BIG_DECIMAL_ZERO;
+            entity.txCount = BIG_INT_ZERO;
             entity.high = param.price;
             entity.low = param.price;
             entity.open = param.price;
@@ -114,6 +117,7 @@ export function updateTokenCandles(param: updateTokenCandlesParam): void {
         entity.volume = entity.volume.plus(param.volume);
         entity.volumeUSD = entity.volumeUSD.plus(param.volumeUSD);
         entity.feeUSD = entity.feeUSD.plus(param.feeUSD);
+        entity.txCount = entity.txCount.plus(BIG_INT_ONE);
         if (param.price.gt(entity.high)) {
             entity.high = param.price;
         }
@@ -132,6 +136,7 @@ export function updateTokenCandles(param: updateTokenCandlesParam): void {
             entity.volume = BIG_INT_ZERO;
             entity.volumeUSD = BIG_DECIMAL_ZERO;
             entity.feeUSD = BIG_DECIMAL_ZERO;
+            entity.txCount = BIG_INT_ZERO;
             entity.high = param.price;
             entity.low = param.price;
             entity.open = param.price;
@@ -142,6 +147,7 @@ export function updateTokenCandles(param: updateTokenCandlesParam): void {
         entity.volume = entity.volume.plus(param.volume);
         entity.volumeUSD = entity.volumeUSD.plus(param.volumeUSD);
         entity.feeUSD = entity.feeUSD.plus(param.feeUSD);
+        entity.txCount = entity.txCount.plus(BIG_INT_ONE);
         if (param.price.gt(entity.high)) {
             entity.high = param.price;
         }
@@ -160,6 +166,7 @@ export function updateTokenCandles(param: updateTokenCandlesParam): void {
             entity.volume = BIG_INT_ZERO;
             entity.volumeUSD = BIG_DECIMAL_ZERO;
             entity.feeUSD = BIG_DECIMAL_ZERO;
+            entity.txCount = BIG_INT_ZERO;
             entity.high = param.price;
             entity.low = param.price;
             entity.open = param.price;
@@ -170,6 +177,7 @@ export function updateTokenCandles(param: updateTokenCandlesParam): void {
         entity.volume = entity.volume.plus(param.volume);
         entity.volumeUSD = entity.volumeUSD.plus(param.volumeUSD);
         entity.feeUSD = entity.feeUSD.plus(param.feeUSD);
+        entity.txCount = entity.txCount.plus(BIG_INT_ONE);
         if (param.price.gt(entity.high)) {
             entity.high = param.price;
         }
@@ -188,6 +196,7 @@ export function updateTokenCandles(param: updateTokenCandlesParam): void {
             entity.volume = BIG_INT_ZERO;
             entity.volumeUSD = BIG_DECIMAL_ZERO;
             entity.feeUSD = BIG_DECIMAL_ZERO;
+            entity.txCount = BIG_INT_ZERO;
             entity.high = param.price;
             entity.low = param.price;
             entity.open = param.price;
@@ -198,6 +207,7 @@ export function updateTokenCandles(param: updateTokenCandlesParam): void {
         entity.volume = entity.volume.plus(param.volume);
         entity.volumeUSD = entity.volumeUSD.plus(param.volumeUSD);
         entity.feeUSD = entity.feeUSD.plus(param.feeUSD);
+        entity.txCount = entity.txCount.plus(BIG_INT_ONE);
         if (param.price.gt(entity.high)) {
             entity.high = param.price;
         }
@@ -216,6 +226,7 @@ export function updateTokenCandles(param: updateTokenCandlesParam): void {
             entity.volume = BIG_INT_ZERO;
             entity.volumeUSD = BIG_DECIMAL_ZERO;
             entity.feeUSD = BIG_DECIMAL_ZERO;
+            entity.txCount = BIG_INT_ZERO;
             entity.high = param.price;
             entity.low = param.price;
             entity.open = param.price;
@@ -226,6 +237,7 @@ export function updateTokenCandles(param: updateTokenCandlesParam): void {
         entity.volume = entity.volume.plus(param.volume);
         entity.volumeUSD = entity.volumeUSD.plus(param.volumeUSD);
         entity.feeUSD = entity.feeUSD.plus(param.feeUSD);
+        entity.txCount = entity.txCount.plus(BIG_INT_ONE);
         if (param.price.gt(entity.high)) {
             entity.high = param.price;
         }
@@ -244,6 +256,7 @@ export function updateTokenCandles(param: updateTokenCandlesParam): void {
             entity.volume = BIG_INT_ZERO;
             entity.volumeUSD = BIG_DECIMAL_ZERO;
             entity.feeUSD = BIG_DECIMAL_ZERO;
+            entity.txCount = BIG_INT_ZERO;
             entity.high = param.price;
             entity.low = param.price;
             entity.open = param.price;
@@ -254,6 +267,7 @@ export function updateTokenCandles(param: updateTokenCandlesParam): void {
         entity.volume = entity.volume.plus(param.volume);
         entity.volumeUSD = entity.volumeUSD.plus(param.volumeUSD);
         entity.feeUSD = entity.feeUSD.plus(param.feeUSD);
+        entity.txCount = entity.txCount.plus(BIG_INT_ONE);
         if (param.price.gt(entity.high)) {
             entity.high = param.price;
         }

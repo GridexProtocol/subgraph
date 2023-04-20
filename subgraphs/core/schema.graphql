@@ -257,6 +257,8 @@ type TokenCandle1M @entity {
     open: BigDecimal!
     "the close usd price of the current candle"
     close: BigDecimal!
+    "the number of transactions"
+    txCount: BigInt!
 }
 
 type TokenCandle5M @entity {
@@ -284,6 +286,8 @@ type TokenCandle5M @entity {
     open: BigDecimal!
     "the close usd price of the current candle"
     close: BigDecimal
+    "the number of transactions"
+    txCount: BigInt!
 }
 
 type TokenCandle15M @entity {
@@ -311,6 +315,8 @@ type TokenCandle15M @entity {
     open: BigDecimal!
     "the close usd price of the current candle"
     close: BigDecimal
+    "the number of transactions"
+    txCount: BigInt!
 }
 
 type TokenCandle30M @entity {
@@ -338,6 +344,8 @@ type TokenCandle30M @entity {
     open: BigDecimal!
     "the close usd price of the current candle"
     close: BigDecimal
+    "the number of transactions"
+    txCount: BigInt!
 }
 
 type TokenCandle1H @entity {
@@ -365,6 +373,8 @@ type TokenCandle1H @entity {
     open: BigDecimal!
     "the close usd price of the current candle"
     close: BigDecimal
+    "the number of transactions"
+    txCount: BigInt!
 }
 
 type TokenCandle4H @entity {
@@ -392,6 +402,8 @@ type TokenCandle4H @entity {
     open: BigDecimal!
     "the close usd price of the current candle"
     close: BigDecimal
+    "the number of transactions"
+    txCount: BigInt!
 }
 
 type TokenCandle1D @entity {
@@ -419,6 +431,8 @@ type TokenCandle1D @entity {
     open: BigDecimal!
     "the close usd price of the current candle"
     close: BigDecimal
+    "the number of transactions"
+    txCount: BigInt!
 }
 
 type GridCandle1M @entity {
@@ -442,16 +456,16 @@ type GridCandle1M @entity {
     volume1: BigInt!
     "usd amount of the volume"
     volumeUSD: BigDecimal!
+    "usd amount of tvl"
+    tvlUSD: BigDecimal!
     "the amount of fees that takers have paid for token0"
     fee0: BigInt!
     "the amount of fees that takers have paid for token1"
     fee1: BigInt!
     "usd amount of the fee"
     feeUSD: BigDecimal!
-    "the number of swap transactions"
+    "the number of transactions"
     txCount: BigInt!
-    "usd amount of tvl"
-    tvlUSD: BigDecimal!
 }
 
 type GridCandle5M @entity {
@@ -475,16 +489,16 @@ type GridCandle5M @entity {
     volume1: BigInt!
     "usd amount of the volume"
     volumeUSD: BigDecimal!
+    "usd amount of tvl"
+    tvlUSD: BigDecimal!
     "the amount of fees that takers have paid for token0"
     fee0: BigInt!
     "the amount of fees that takers have paid for token1"
     fee1: BigInt!
     "usd amount of the fee"
     feeUSD: BigDecimal!
-    "the number of swap transactions"
+    "the number of transactions"
     txCount: BigInt!
-    "usd amount of tvl"
-    tvlUSD: BigDecimal!
 }
 
 type GridCandle15M @entity {
@@ -508,16 +522,16 @@ type GridCandle15M @entity {
     volume1: BigInt!
     "usd amount of the volume"
     volumeUSD: BigDecimal!
+    "usd amount of tvl"
+    tvlUSD: BigDecimal!
     "the amount of fees that takers have paid for token0"
     fee0: BigInt!
     "the amount of fees that takers have paid for token1"
     fee1: BigInt!
     "usd amount of the fee"
     feeUSD: BigDecimal!
-    "the number of swap transactions"
+    "the number of transactions"
     txCount: BigInt!
-    "usd amount of tvl"
-    tvlUSD: BigDecimal!
 }
 
 type GridCandle30M @entity {
@@ -541,16 +555,16 @@ type GridCandle30M @entity {
     volume1: BigInt!
     "usd amount of the volume"
     volumeUSD: BigDecimal!
+    "usd amount of tvl"
+    tvlUSD: BigDecimal!
     "the amount of fees that takers have paid for token0"
     fee0: BigInt!
     "the amount of fees that takers have paid for token1"
     fee1: BigInt!
     "usd amount of the fee"
     feeUSD: BigDecimal!
-    "the number of swap transactions"
+    "the number of transactions"
     txCount: BigInt!
-    "usd amount of tvl"
-    tvlUSD: BigDecimal!
 }
 
 type GridCandle1H @entity {
@@ -574,16 +588,16 @@ type GridCandle1H @entity {
     volume1: BigInt!
     "usd amount of the volume"
     volumeUSD: BigDecimal!
+    "usd amount of tvl"
+    tvlUSD: BigDecimal!
     "the amount of fees that takers have paid for token0"
     fee0: BigInt!
     "the amount of fees that takers have paid for token1"
     fee1: BigInt!
     "usd amount of the fee"
     feeUSD: BigDecimal!
-    "the number of swap transactions"
+    "the number of transactions"
     txCount: BigInt!
-    "usd amount of tvl"
-    tvlUSD: BigDecimal!
 }
 
 type GridCandle4H @entity {
@@ -607,16 +621,16 @@ type GridCandle4H @entity {
     volume1: BigInt!
     "usd amount of the volume"
     volumeUSD: BigDecimal!
+    "usd amount of tvl"
+    tvlUSD: BigDecimal!
     "the amount of fees that takers have paid for token0"
     fee0: BigInt!
     "the amount of fees that takers have paid for token1"
     fee1: BigInt!
     "usd amount of the fee"
     feeUSD: BigDecimal!
-    "the number of swap transactions"
+    "the number of transactions"
     txCount: BigInt!
-    "usd amount of tvl"
-    tvlUSD: BigDecimal!
 }
 
 type GridCandle1D @entity {
@@ -640,16 +654,16 @@ type GridCandle1D @entity {
     volume1: BigInt!
     "usd amount of the volume"
     volumeUSD: BigDecimal!
+    "usd amount of tvl"
+    tvlUSD: BigDecimal!
     "the amount of fees that takers have paid for token0"
     fee0: BigInt!
     "the amount of fees that takers have paid for token1"
     fee1: BigInt!
     "usd amount of the fee"
     feeUSD: BigDecimal!
-    "the number of swap transactions"
+    "the number of transactions"
     txCount: BigInt!
-    "usd amount of tvl"
-    tvlUSD: BigDecimal!
 }
 
 type TransactionHistory @entity(immutable: true) {
