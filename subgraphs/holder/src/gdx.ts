@@ -1,7 +1,7 @@
 import {Transfer as TransferEvent} from "../generated/GDX/GDX";
 import {Holder, Overview} from "../generated/schema";
 import {Address, BigDecimal, BigInt, store} from "@graphprotocol/graph-ts";
-import {BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO} from "../../core/src/base/helper/consts";
+import {BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO} from "../../core/src/helper/consts";
 
 export function handleTransfer(event: TransferEvent): void {
     const value = event.params.value;

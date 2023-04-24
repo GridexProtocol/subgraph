@@ -19,11 +19,11 @@
         "node": ">=10"
     },
     "scripts": {
-        "core-rebuild-goerli": "rm -rf generated && rm -rf build && cd subgraphs/core/src/goerli && graph codegen -o ../../generated && graph build -o ../../build",
-        "core-deploy-goerli": "cd subgraphs/core/src/goerli && graph deploy --studio core-subgraph-goerli",
-        "core-rebuild-arbitrum": "rm -rf generated && rm -rf build && cd subgraphs/core/src/arbitrum && graph codegen -o ../../generated && graph build -o ../../build",
-        "core-deploy-arbitrum": "cd subgraphs/core/src/arbitrum && graph deploy --studio core-subgraph-arbitrum-v2",
-        "holder-rebuild-arbitrum": "rm -rf generated && rm -rf build && cd subgraphs/holder && graph codegen -o ./generated && graph build -o ./build",
+        "core-rebuild": "rm -rf generated build && cd subgraphs/core && graph codegen && graph build",
+        "core-deploy-goerli": "cd subgraphs/core && graph deploy --network goerli --studio core-subgraph-goerli",
+        "core-deploy-arbitrum": "cd subgraphs/core && graph deploy --network arbitrum-one --studio core-subgraph-arbitrum-v3",
+        "core-deploy-base-testnet": "cd subgraphs/core && graph deploy --network base-testnet --studio core-subgraph-base-testnet",
+        "holder-rebuild": "rm -rf generated build && cd subgraphs/holder && graph codegen && graph build",
         "holder-deploy-arbitrum": "cd subgraphs/holder && graph deploy --studio holder",
         "create-local": "graph create --node http://localhost:8020/ subgraph",
         "remove-local": "graph remove --node http://localhost:8020/ subgraph",

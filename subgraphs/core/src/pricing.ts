@@ -1,13 +1,16 @@
 import {Address, BigDecimal} from "@graphprotocol/graph-ts";
-import {Token} from "../../generated/schema";
+import {Token} from "../generated/schema";
 import {BIG_DECIMAL_ONE, BIG_DECIMAL_ZERO, NETWORK} from "./helper/consts";
 import {
     MINIMUM_USD_LOCKED_ARBITRUM_ONE,
+    MINIMUM_USD_LOCKED_BASE_GOERLI,
     MINIMUM_USD_LOCKED_GOERLI,
     STABLE_COINS_ARBITRUM_ONE,
+    STABLE_COINS_BASE_GOERLI,
     STABLE_COINS_GOERLI,
     WHITELIST_TOKENS_ARBITRUM_ONE,
-    WHITELIST_TOKENS_GOERLI
+    WHITELIST_TOKENS_BASE_GOERLI,
+    WHITELIST_TOKENS_GOERLI,
 } from "./helper/definition";
 import {mustLoadGrid, mustLoadToken} from "./helper/loader";
 import {toAmountDecimal} from "./helper/util";
@@ -17,6 +20,8 @@ export function getWhiteListTokensDefinition(): string[] {
         return WHITELIST_TOKENS_ARBITRUM_ONE;
     } else if (NETWORK == "goerli") {
         return WHITELIST_TOKENS_GOERLI;
+    } else if (NETWORK == "base-testnet") {
+        return WHITELIST_TOKENS_BASE_GOERLI;
     } else {
         throw new Error("unsupported network");
     }
@@ -27,6 +32,8 @@ function getStableCoinsDefinition(): string[] {
         return STABLE_COINS_ARBITRUM_ONE;
     } else if (NETWORK == "goerli") {
         return STABLE_COINS_GOERLI;
+    } else if (NETWORK == "base-testnet") {
+        return STABLE_COINS_BASE_GOERLI;
     } else {
         throw new Error("unsupported network");
     }
@@ -37,6 +44,8 @@ function getMinimumUSDLockedDefinition(): BigDecimal {
         return MINIMUM_USD_LOCKED_ARBITRUM_ONE;
     } else if (NETWORK == "goerli") {
         return MINIMUM_USD_LOCKED_GOERLI;
+    } else if (NETWORK == "base-testnet") {
+        return MINIMUM_USD_LOCKED_BASE_GOERLI;
     } else {
         throw new Error("unsupported network");
     }
