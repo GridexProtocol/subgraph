@@ -1,11 +1,11 @@
 import {
     GridCreated as GridCreatedEvent,
-    ResolutionEnabled as ResolutionEnabledEvent
-} from "../../generated/GridFactory/GridFactory";
-import {Grid as GridRegistry} from "../../generated/templates";
-import {ERC20} from "../../generated/GridFactory/ERC20";
-import {ERC20Bytes} from "../../generated/GridFactory/ERC20Bytes";
-import {Grid, GridexProtocol, Resolution, Token} from "../../generated/schema";
+    ResolutionEnabled as ResolutionEnabledEvent,
+} from "../generated/GridFactory/GridFactory";
+import {Grid as GridRegistry} from "../generated/templates";
+import {ERC20} from "../generated/GridFactory/ERC20";
+import {ERC20Bytes} from "../generated/GridFactory/ERC20Bytes";
+import {Grid, GridexProtocol, Resolution, Token} from "../generated/schema";
 import {Address, BigDecimal} from "@graphprotocol/graph-ts";
 import {log} from "@graphprotocol/graph-ts";
 import {BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO, NETWORK} from "./helper/consts";

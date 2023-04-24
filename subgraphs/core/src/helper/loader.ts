@@ -1,4 +1,4 @@
-import {Grid, GridexProtocol, Token} from "../../../generated/schema";
+import {Grid, GridexProtocol, Token} from "../../generated/schema";
 import {Address} from "@graphprotocol/graph-ts";
 
 export function mustLoadProtocol(): GridexProtocol {

@@ -1,5 +1,5 @@
-import {IncreaseCapacity} from "../../generated/PriceOracle/PriceOracle";
-import {Grid, GridexProtocol} from "../../generated/schema";
+import {IncreaseCapacity} from "../generated/PriceOracle/PriceOracle";
+import {Grid, GridexProtocol} from "../generated/schema";
 import {saveUniqueTransactionIfRequired} from "./helper/stats";
 
 function handleIncreaseCapacity(event: IncreaseCapacity): void {

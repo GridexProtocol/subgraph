@@ -1,7 +1,7 @@
 // loadOrCreateUser is used to load a unique user if it exists, or create a new one if it doesn't
 //
 // protocol.userCount is incremented if the user is new and saved, caller SHOULD NOT save protocol
-import {GridexProtocol, UniqueTransaction, UniqueUser} from "../../../generated/schema";
+import {GridexProtocol, UniqueTransaction, UniqueUser} from "../../generated/schema";
 import {Address, BigInt, ethereum} from "@graphprotocol/graph-ts";
 import {BIG_INT_ONE, BIG_INT_ZERO} from "./consts";
 

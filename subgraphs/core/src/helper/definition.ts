@@ -14,13 +14,13 @@ export const WHITELIST_TOKENS_ARBITRUM_ONE: string[] = [
     "0x9623063377ad1b27544c965ccd7342f7ea7e88c7", // GRT
     "0x11cdb42b0eb46d95f990bedd4695a6e3fa034978", // CRV
     "0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a", // GMX
-    "0x040d1edc9569d4bab2d15287dc5a4f10f56a56b8" // BAL
+    "0x040d1edc9569d4bab2d15287dc5a4f10f56a56b8", // BAL
 ];
 export const STABLE_COINS_ARBITRUM_ONE: string[] = [
     "0xff970a61a04b1ca14834a43f5de4533ebddb5cc8", // USDC
     "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9", // USDT
     "0x4d15a3a2286d883af0aa1b3f21367843fac63e07", // TUSD
-    "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1" // DAI
+    "0xda10009cbd5d07dd0cecc66161fc93d7c9000da1", // DAI
 ];
 export const MINIMUM_USD_LOCKED_ARBITRUM_ONE = BigDecimal.fromString("2000");
 
@@ -37,7 +37,7 @@ export const WHITELIST_TOKENS_GOERLI: string[] = [
     "0xfe9a6c8f51851649fb97ef829fb1c128ddd44c85", // DAI
     "0x2d935d1b05e3f9ac5582617e161132d72e1b442a", // BUSD
     "0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6", // ETH
-    "0xb0022c60a26c4735bfd0ffee738dcf9292eb03ce" // btc
+    "0xb0022c60a26c4735bfd0ffee738dcf9292eb03ce", // btc
 ];
 
 export const STABLE_COINS_GOERLI: string[] = [
@@ -47,6 +47,19 @@ export const STABLE_COINS_GOERLI: string[] = [
     "0x23458bd252d00809ba969ab8a88a06b8d5c8fd25", // USDC
     "0xe8d81455e3abca8813f4f2643e0770a3ede44059", // USDT
     "0xfe9a6c8f51851649fb97ef829fb1c128ddd44c85", // DAI
-    "0x2d935d1b05e3f9ac5582617e161132d72e1b442a" // BUSD
+    "0x2d935d1b05e3f9ac5582617e161132d72e1b442a", // BUSD
 ];
 export const MINIMUM_USD_LOCKED_GOERLI = BigDecimal.fromString("200");
+
+// base-goerli
+export const WHITELIST_TOKENS_BASE_GOERLI: string[] = [
+    "0x0bd15bf121d229e28a04f24ac671f96139e51665", // aUSDC
+    "0xcb3a3420b850573907a283d3ad4080fcb30f9c97", // aETH
+    "0x4200000000000000000000000000000000000006", // WETH
+];
+
+export const STABLE_COINS_BASE_GOERLI: string[] = [
+    "0x0bd15bf121d229e28a04f24ac671f96139e51665", // aUSDC
+];
+
+export const MINIMUM_USD_LOCKED_BASE_GOERLI = BigDecimal.fromString("200");

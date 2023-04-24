@@ -12,8 +12,8 @@ import {
     TokenCandle30M,
     TokenCandle1H,
     TokenCandle4H,
-    TokenCandle1D
-} from "../../generated/schema";
+    TokenCandle1D,
+} from "../generated/schema";
 import {BigDecimal, BigInt, ethereum} from "@graphprotocol/graph-ts";
 import {BIG_DECIMAL_ZERO, BIG_INT_ONE, BIG_INT_ZERO} from "./helper/consts";
 
@@ -24,7 +24,7 @@ enum CandleType {
     THIRTY_MINUTES = ONE_MINUTE * 30, // 30M
     ONE_HOUR = ONE_MINUTE * 60, // 1H
     FOUR_HOURS = ONE_HOUR * 4, // 4H
-    ONE_DAY = ONE_HOUR * 24 // 1D
+    ONE_DAY = ONE_HOUR * 24, // 1D
 }
 
 export class updateGridCandlesParam {
@@ -63,7 +63,7 @@ export class updateTokenCandlesParam {
 }
 
 export function updateTokenCandles(param: updateTokenCandlesParam): void {
-    const timestampFn = function(event: ethereum.Event, type: CandleType): BigInt {
+    const timestampFn = function (event: ethereum.Event, type: CandleType): BigInt {
         return event.block.timestamp.minus(event.block.timestamp.mod(BigInt.fromI32(type)));
     };
     {
@@ -279,7 +279,7 @@ export function updateTokenCandles(param: updateTokenCandlesParam): void {
 }
 
 export function updateGridCandles(param: updateGridCandlesParam): void {
-    const timestampFn = function(event: ethereum.Event, type: CandleType): BigInt {
+    const timestampFn = function (event: ethereum.Event, type: CandleType): BigInt {
         return event.block.timestamp.minus(event.block.timestamp.mod(BigInt.fromI32(type)));
     };
     {

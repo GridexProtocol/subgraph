@@ -1,14 +1,14 @@
 specVersion: 0.0.5
 schema:
-  file: ../../schema.graphql
+  file: ./schema.graphql
 dataSources:
   - kind: ethereum
     name: GridFactory
-    network: goerli
+    network: arbitrum-one
     source:
-      address: "0x32d1F0Dce675902f89D72251DB4AB1d728efa19c"
       abi: GridFactory
-      startBlock: 8588117
+      address: "0x32d1F0Dce675902f89D72251DB4AB1d728efa19c"
+      startBlock: 64404349
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -19,24 +19,24 @@ dataSources:
         - Resolution
       abis:
         - name: GridFactory
-          file: ../../abis/GridFactory.json
+          file: ./abis/GridFactory.json
         - name: ERC20
-          file: ../../abis/ERC20.json
+          file: ./abis/ERC20.json
         - name: ERC20Bytes
-          file: ../../abis/ERC20Bytes.json
+          file: ./abis/ERC20Bytes.json
       eventHandlers:
         - event: GridCreated(indexed address,indexed address,indexed int24,address)
           handler: handleGridCreated
         - event: ResolutionEnabled(indexed int24,indexed int24)
           handler: handleResolutionEnabled
-      file: ../../src/base/grid-factory.ts
+      file: ./src/grid-factory.ts
   - kind: ethereum
     name: PriceOracle
-    network: goerli
+    network: arbitrum-one
     source:
-      address: "0x9Da10a86F57e810A8A1D72F4A874419eB69BF16A"
       abi: PriceOracle
-      startBlock: 8588117
+      address: "0x9Da10a86F57e810A8A1D72F4A874419eB69BF16A"
+      startBlock: 64404349
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -45,15 +45,15 @@ dataSources:
         - Grid
       abis:
         - name: PriceOracle
-          file: ../../abis/PriceOracle.json
+          file: ./abis/PriceOracle.json
       eventHandlers:
         - event: IncreaseCapacity(indexed address,uint16,uint16)
           handler: handleIncreaseCapacity
-      file: ../../src/base/price-oracle.ts
+      file: ./src/price-oracle.ts
 templates:
   - kind: ethereum
     name: Grid
-    network: goerli
+    network: arbitrum-one
     source:
       abi: Grid
     mapping:
@@ -71,7 +71,7 @@ templates:
         - Swap
       abis:
         - name: Grid
-          file: ../../abis/Grid.json
+          file: ./abis/Grid.json
       eventHandlers:
         - event: ChangeBundleForSettleOrder(indexed uint64,int256,int256)
           handler: handleChangeBundleForSettleOrder
@@ -83,10 +83,11 @@ templates:
           handler: handleFlash
         - event: Initialize(uint160,int24)
           handler: handleInitialize
-        - event: PlaceMakerOrder(indexed uint256,indexed address,indexed uint64,bool,int24,uint128)
+        - event: PlaceMakerOrder(indexed uint256,indexed address,indexed
+            uint64,bool,int24,uint128)
           handler: handlePlaceMakerOrder
         - event: SettleMakerOrder(indexed uint256,uint128,uint128,uint128)
           handler: handleSettleMakerOrder
         - event: Swap(indexed address,indexed address,int256,int256,uint160,int24)
           handler: handleSwap
-      file: ../../src/base/grid.ts
+      file: ./src/grid.ts
