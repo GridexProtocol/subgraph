@@ -1,0 +1,39 @@
+type Staker @entity {
+    "the id of the staker"
+    id: Bytes!
+    "the staking amount of the staker"
+    stakingAmount: BigDecimal!
+}
+
+type Staking @entity {
+    "the id of the staking"
+    id: ID!
+    "the staking id of the staking"
+    stakingId: BigInt!
+    "the owner of the staking"
+    owner: Bytes!
+    "the amount of the staking"
+    amount: BigDecimal!
+    "the staked block number of the staking"
+    stakedBlock: BigInt!
+    "the staked timestamp of the staking"
+    stakedTimestamp: BigInt!
+    "the staked tx hash of the staking"
+    stakedTxHash: Bytes!
+    "the unstaked block number of the staking"
+    unstakedBlock: BigInt!
+    "the unstaked timestamp of the staking"
+    unstakedTimestamp: BigInt!
+    "the unstaked tx hash of the staking"
+    unstakedTxHash: Bytes!
+    "the redeemable time of the staking"
+    redeemableTime: BigInt!
+    "the redeemed block number of the staking"
+    redeemedBlock: BigInt!
+    "the redeemed timestamp of the staking"
+    redeemedTimestamp: BigInt!
+    "the redeemed tx "
+    redeemedTxHash: Bytes
+    "the status of the staking"
+    status: String!
+}
