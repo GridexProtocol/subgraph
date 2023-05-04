@@ -2,7 +2,7 @@ import {IncreaseCapacity} from "../generated/PriceOracle/PriceOracle";
 import {Grid, GridexProtocol} from "../generated/schema";
 import {saveUniqueTransactionIfRequired} from "./helper/stats";
 
-function handleIncreaseCapacity(event: IncreaseCapacity): void {
+export function handleIncreaseCapacity(event: IncreaseCapacity): void {
     const protocol = GridexProtocol.load("GridexProtocol") as GridexProtocol;
     if (saveUniqueTransactionIfRequired(protocol, event)) {
         protocol.save();
