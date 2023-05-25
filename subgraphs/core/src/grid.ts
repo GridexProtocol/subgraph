@@ -6,7 +6,7 @@ import {
     Initialize as InitializeEvent,
     PlaceMakerOrder as PlaceMakerOrderEvent,
     SettleMakerOrder as SettleMakerOrderEvent,
-    Swap as SwapEvent,
+    Swap as SwapEvent
 } from "../generated/templates/Grid/Grid";
 import {Grid, Token, Bundle, Order, Boundary, TransactionHistory, GridexProtocol} from "../generated/schema";
 import {BigInt, BigDecimal, Bytes} from "@graphprotocol/graph-ts";
@@ -116,10 +116,10 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
     let amountUSD: BigDecimal;
     if (event.params.zero) {
         token = token0;
-        amountUSD = toAmountDecimal(event.params.amount, token0.decimals).plus(token0.priceUSD);
+        amountUSD = toAmountDecimal(event.params.amount, token0.decimals).times(token0.priceUSD);
     } else {
         token = token1;
-        amountUSD = toAmountDecimal(event.params.amount, token1.decimals).plus(token1.priceUSD);
+        amountUSD = toAmountDecimal(event.params.amount, token1.decimals).times(token1.priceUSD);
     }
     token.totalLocked = token.totalLocked.plus(event.params.amount);
     token.totalLockedUSD = toAmountDecimal(token.totalLocked, token.decimals).times(token.priceUSD);
@@ -178,7 +178,7 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
         fee0: BIG_INT_ZERO,
         fee1: BIG_INT_ZERO,
         feeUSD: BIG_DECIMAL_ZERO,
-        tvlUSD: grid.tvlUSD,
+        tvlUSD: grid.tvlUSD
     };
     updateGridCandles(updateGridCandlesParam);
 
@@ -191,7 +191,7 @@ export function handlePlaceMakerOrder(event: PlaceMakerOrderEvent): void {
         fee: BIG_INT_ZERO,
         feeUSD: BIG_DECIMAL_ZERO,
         totalLocked: token.totalLocked,
-        totalLockedUSD: token.totalLockedUSD,
+        totalLockedUSD: token.totalLockedUSD
     };
     updateTokenCandles(updateTokenCandlesParam);
 }
@@ -252,7 +252,7 @@ export function handleChangeBundleForSettleOrder(event: ChangeBundleForSettleOrd
         fee0: BIG_INT_ZERO,
         fee1: BIG_INT_ZERO,
         feeUSD: BIG_DECIMAL_ZERO,
-        tvlUSD: grid.tvlUSD,
+        tvlUSD: grid.tvlUSD
     };
     updateGridCandles(updateGridCandlesParam);
 
@@ -265,7 +265,7 @@ export function handleChangeBundleForSettleOrder(event: ChangeBundleForSettleOrd
         fee: BIG_INT_ZERO,
         feeUSD: BIG_DECIMAL_ZERO,
         totalLocked: token.totalLocked,
-        totalLockedUSD: token.totalLockedUSD,
+        totalLockedUSD: token.totalLockedUSD
     };
     updateTokenCandles(updateTokenCandlesParam);
 }
@@ -453,7 +453,10 @@ export function handleSwap(event: SwapEvent): void {
     if (fee0.gt(BIG_INT_ZERO)) {
         if (event.params.amount0.minus(fee0).gt(BIG_INT_ZERO)) {
             tx.avgPrice = calculatePrice0(
-                event.params.amount1.abs().leftShift(96).div(event.params.amount0.minus(fee0)),
+                event.params.amount1
+                    .abs()
+                    .leftShift(96)
+                    .div(event.params.amount0.minus(fee0)),
                 token0.decimals,
                 token1.decimals
             );
@@ -461,7 +464,10 @@ export function handleSwap(event: SwapEvent): void {
     } else {
         if (event.params.amount0.abs().gt(BIG_INT_ZERO)) {
             tx.avgPrice = calculatePrice0(
-                event.params.amount1.minus(fee1).leftShift(96).div(event.params.amount0.abs()),
+                event.params.amount1
+                    .minus(fee1)
+                    .leftShift(96)
+                    .div(event.params.amount0.abs()),
                 token0.decimals,
                 token1.decimals
             );
@@ -482,7 +488,7 @@ export function handleSwap(event: SwapEvent): void {
         fee0: fee0,
         fee1: fee1,
         feeUSD: feeUSD,
-        tvlUSD: grid.tvlUSD,
+        tvlUSD: grid.tvlUSD
     };
     updateGridCandles(updateGridCandlesParam);
 
@@ -495,7 +501,7 @@ export function handleSwap(event: SwapEvent): void {
         fee: fee0,
         feeUSD: fee0USD,
         totalLocked: token0.totalLocked,
-        totalLockedUSD: token0.totalLockedUSD,
+        totalLockedUSD: token0.totalLockedUSD
     };
     updateTokenCandles(updateToken0CandlesParam);
 
@@ -508,7 +514,7 @@ export function handleSwap(event: SwapEvent): void {
         fee: fee1,
         feeUSD: fee1USD,
         totalLocked: token1.totalLocked,
-        totalLockedUSD: token1.totalLockedUSD,
+        totalLockedUSD: token1.totalLockedUSD
     };
     updateTokenCandles(updateToken1CandlesParam);
 }
@@ -614,9 +620,21 @@ function calculateVolume(volume0: BigDecimal, volume1: BigDecimal): BigDecimal {
 function calculatePrice0(priceX96: BigInt, decimals0: i32, decimals1: i32): BigDecimal {
     return priceX96
         .toBigDecimal()
-        .div(BigInt.fromI32(2).pow(96).toBigDecimal())
-        .times(BigInt.fromI32(10).pow(u8(decimals0)).toBigDecimal())
-        .div(BigInt.fromI32(10).pow(u8(decimals1)).toBigDecimal());
+        .div(
+            BigInt.fromI32(2)
+                .pow(96)
+                .toBigDecimal()
+        )
+        .times(
+            BigInt.fromI32(10)
+                .pow(u8(decimals0))
+                .toBigDecimal()
+        )
+        .div(
+            BigInt.fromI32(10)
+                .pow(u8(decimals1))
+                .toBigDecimal()
+        );
 }
 
 function calculatePrice1(price0: BigDecimal): BigDecimal {
