@@ -116,3 +116,30 @@ export const STABLE_COINS_OPTIMISM: string[] = [
 ];
 
 export const MINIMUM_USD_LOCKED_OPTIMISM = BigDecimal.fromString("2000");
+
+// matic
+export const WHITELIST_TOKENS_MATIC: string[] = [
+    "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6", // WBTC
+    "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619", // WETH
+    "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270", // WMATIC
+    "0x0000000000000000000000000000000000001010", // MATIC
+    "0x2791bca1f2de4661ed88a30c99a7a9449aa84174", // USDC
+    "0xc2132d05d31c914a87c6611c10748aeb04b58e8f", // USDT
+    "0xdab529f40e671a1d4bf91361c21bf9f0c9712ab7", // BUSD
+    "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063", // DAI
+    "0xb33eaad8d922b1083446dc23f610c2567fb5180f", // UNI
+    "0xb0897686c545045afc77cf20ec7a532e3120e0f1", // LINK
+    "0x53e0bca35ec356bd5dddfebbd1fc0fd03fabad39", // LINK Bridged
+    "0xc3c7d422809852031b44ab29eec9f1eff2a58756", // LDO
+    "0x172370d5cd63279efa6d502dab29171933a610af", // CRV
+    "0x9a71012b13ca4d3d0cdc72a177df3ef03b0e76a3", // BAL
+    "0xd6df932a45c0f255f85145f286ea0b292b21c90b" // AAVE
+];
+
+export const STABLE_COINS_MATIC: string[] = [
+    "0x2791bca1f2de4661ed88a30c99a7a9449aa84174", // USDC
+    "0xc2132d05d31c914a87c6611c10748aeb04b58e8f", // USDT
+    "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063" // DAI
+];
+
+export const MINIMUM_USD_LOCKED_MATIC = BigDecimal.fromString("2000");

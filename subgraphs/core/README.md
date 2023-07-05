@@ -13,3 +13,4 @@ For testing purposes, you can use the following subgraph:
 | Base _Testnet_   | [core-subgraph-base-testnet](https://api.studio.thegraph.com/query/43214/core-subgraph-base-testnet/v0.0.3) |
 | Mainnet          | [core-subgraph-mainnet](https://api.studio.thegraph.com/query/43214/core-subgraph-mainnet/v0.0.3)           |
 | Optimism         | [core-subgraph-optimism](https://api.thegraph.com/subgraphs/name/gridexprotocol/gridex-protocol-optimism)   |
+| Polygon          | [core-subgraph-polygon](https://api.thegraph.com/subgraphs/name/gridexprotocol/gridex-protocol-polygon)     |
