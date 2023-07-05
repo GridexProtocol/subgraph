@@ -117,8 +117,8 @@ export const STABLE_COINS_OPTIMISM: string[] = [
 
 export const MINIMUM_USD_LOCKED_OPTIMISM = BigDecimal.fromString("2000");
 
-// polygon
-export const WHITELIST_TOKENS_POLYGON: string[] = [
+// matic
+export const WHITELIST_TOKENS_MATIC: string[] = [
     "0x1bfd67037b42cf73acf2047067bd4f2c47d9bfd6", // WBTC
     "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619", // WETH
     "0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270", // WMATIC
@@ -136,10 +136,10 @@ export const WHITELIST_TOKENS_POLYGON: string[] = [
     "0xd6df932a45c0f255f85145f286ea0b292b21c90b" // AAVE
 ];
 
-export const STABLE_COINS_POLYGON: string[] = [
+export const STABLE_COINS_MATIC: string[] = [
     "0x2791bca1f2de4661ed88a30c99a7a9449aa84174", // USDC
     "0xc2132d05d31c914a87c6611c10748aeb04b58e8f", // USDT
     "0x8f3cf7ad23cd3cadbd9735aff958023239c6a063" // DAI
 ];
 
-export const MINIMUM_USD_LOCKED_POLYGON = BigDecimal.fromString("2000");
+export const MINIMUM_USD_LOCKED_MATIC = BigDecimal.fromString("2000");

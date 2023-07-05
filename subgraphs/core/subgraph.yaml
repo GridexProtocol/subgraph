@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: GridFactory
-    network: arbitrum-one
+    network: matic
     source:
       abi: GridFactory
       address: "0x32d1F0Dce675902f89D72251DB4AB1d728efa19c"
-      startBlock: 64404349
+      startBlock: 44421430
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -32,11 +32,11 @@ dataSources:
       file: ./src/grid-factory.ts
   - kind: ethereum
     name: PriceOracle
-    network: arbitrum-one
+    network: matic
     source:
       abi: PriceOracle
       address: "0x9Da10a86F57e810A8A1D72F4A874419eB69BF16A"
-      startBlock: 64404349
+      startBlock: 44421430
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -53,7 +53,7 @@ dataSources:
 templates:
   - kind: ethereum
     name: Grid
-    network: arbitrum-one
+    network: matic
     source:
       abi: Grid
     mapping:

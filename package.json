@@ -25,7 +25,7 @@
         "core-deploy-base-testnet": "cd subgraphs/core && graph deploy --network base-testnet --studio core-subgraph-base-testnet",
         "core-deploy-mainnet": "cd subgraphs/core && graph deploy --network mainnet --studio core-subgraph-mainnet",
         "core-deploy-optimism": "cd subgraphs/core && graph deploy --network optimism --product hosted-service gridexprotocol/gridex-protocol-optimism",
-        "core-deploy-polygon": "cd subgraphs/core && graph deploy --network polygon --studio core-subgraph-polygon",
+        "core-deploy-polygon": "cd subgraphs/core && graph deploy --network matic --product hosted-service gridexprotocol/gridex-protocol-polygon",
         "holder-rebuild": "rm -rf generated build && cd subgraphs/holder && graph codegen && graph build",
         "holder-deploy-arbitrum": "cd subgraphs/holder && graph deploy --studio holder",
         "staking-rebuild": "rm -rf generated build && cd subgraphs/staking && graph codegen && graph build",

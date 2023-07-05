@@ -7,19 +7,19 @@ import {
     MINIMUM_USD_LOCKED_GOERLI,
     MINIMUM_USD_LOCKED_MAINNET,
     MINIMUM_USD_LOCKED_OPTIMISM,
-    MINIMUM_USD_LOCKED_POLYGON,
+    MINIMUM_USD_LOCKED_MATIC,
     STABLE_COINS_ARBITRUM_ONE,
     STABLE_COINS_BASE_GOERLI,
     STABLE_COINS_GOERLI,
     STABLE_COINS_MAINNET,
     STABLE_COINS_OPTIMISM,
-    STABLE_COINS_POLYGON,
+    STABLE_COINS_MATIC,
     WHITELIST_TOKENS_ARBITRUM_ONE,
     WHITELIST_TOKENS_BASE_GOERLI,
     WHITELIST_TOKENS_GOERLI,
     WHITELIST_TOKENS_MAINNET,
     WHITELIST_TOKENS_OPTIMISM,
-    WHITELIST_TOKENS_POLYGON
+    WHITELIST_TOKENS_MATIC
 } from "./helper/definition";
 import {mustLoadGrid, mustLoadToken} from "./helper/loader";
 import {toAmountDecimal} from "./helper/util";
@@ -35,8 +35,8 @@ export function getWhiteListTokensDefinition(): string[] {
         return WHITELIST_TOKENS_MAINNET;
     } else if (NETWORK == "optimism") {
         return WHITELIST_TOKENS_OPTIMISM;
-    } else if (NETWORK == "polygon") {
-        return WHITELIST_TOKENS_POLYGON;
+    } else if (NETWORK == "matic") {
+        return WHITELIST_TOKENS_MATIC;
     } else {
         throw new Error("unsupported network");
     }
@@ -53,8 +53,8 @@ function getStableCoinsDefinition(): string[] {
         return STABLE_COINS_MAINNET;
     } else if (NETWORK == "optimism") {
         return STABLE_COINS_OPTIMISM;
-    } else if (NETWORK == "polygon") {
-        return STABLE_COINS_POLYGON;
+    } else if (NETWORK == "matic") {
+        return STABLE_COINS_MATIC;
     } else {
         throw new Error("unsupported network");
     }
@@ -71,8 +71,8 @@ function getMinimumUSDLockedDefinition(): BigDecimal {
         return MINIMUM_USD_LOCKED_MAINNET;
     } else if (NETWORK == "optimism") {
         return MINIMUM_USD_LOCKED_OPTIMISM;
-    } else if (NETWORK == "polygon") {
-        return MINIMUM_USD_LOCKED_POLYGON;
+    } else if (NETWORK == "matic") {
+        return MINIMUM_USD_LOCKED_MATIC;
     } else {
         throw new Error("unsupported network");
     }
