@@ -29,6 +29,16 @@
             "startBlock": 3528420
         }
     },
+    "base": {
+        "GridFactory": {
+            "address": "0x32d1F0Dce675902f89D72251DB4AB1d728efa19c",
+            "startBlock": 2047830
+        },
+        "PriceOracle": {
+            "address": "0x9Da10a86F57e810A8A1D72F4A874419eB69BF16A",
+            "startBlock": 2047830
+        }
+    },
     "mainnet": {
         "GridFactory": {
             "address": "0x32d1F0Dce675902f89D72251DB4AB1d728efa19c",

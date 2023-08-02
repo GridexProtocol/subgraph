@@ -23,6 +23,7 @@
         "core-deploy-goerli": "cd subgraphs/core && graph deploy --network goerli --studio core-subgraph-goerli",
         "core-deploy-arbitrum": "cd subgraphs/core && graph deploy --network arbitrum-one --studio core-subgraph-arbitrum",
         "core-deploy-base-testnet": "cd subgraphs/core && graph deploy --network base-testnet --studio core-subgraph-base-testnet",
+        "core-deploy-base": "cd subgraphs/core && graph deploy --network base --studio core-subgraph-base",
         "core-deploy-mainnet": "cd subgraphs/core && graph deploy --network mainnet --studio core-subgraph-mainnet",
         "core-deploy-optimism": "cd subgraphs/core && graph deploy --network optimism --product hosted-service gridexprotocol/gridex-protocol-optimism",
         "core-deploy-polygon": "cd subgraphs/core && graph deploy --network matic --product hosted-service gridexprotocol/gridex-protocol-polygon",
