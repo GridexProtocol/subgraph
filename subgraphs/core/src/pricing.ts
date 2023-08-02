@@ -4,18 +4,21 @@ import {BIG_DECIMAL_ONE, BIG_DECIMAL_ZERO, NETWORK} from "./helper/consts";
 import {
     MINIMUM_USD_LOCKED_ARBITRUM_ONE,
     MINIMUM_USD_LOCKED_BASE_GOERLI,
+    MINIMUM_USD_LOCKED_BASE_MAINNET,
     MINIMUM_USD_LOCKED_GOERLI,
     MINIMUM_USD_LOCKED_MAINNET,
     MINIMUM_USD_LOCKED_OPTIMISM,
     MINIMUM_USD_LOCKED_MATIC,
     STABLE_COINS_ARBITRUM_ONE,
     STABLE_COINS_BASE_GOERLI,
+    STABLE_COINS_BASE_MAINNET,
     STABLE_COINS_GOERLI,
     STABLE_COINS_MAINNET,
     STABLE_COINS_OPTIMISM,
     STABLE_COINS_MATIC,
     WHITELIST_TOKENS_ARBITRUM_ONE,
     WHITELIST_TOKENS_BASE_GOERLI,
+    WHITELIST_TOKENS_BASE_MAINNET,
     WHITELIST_TOKENS_GOERLI,
     WHITELIST_TOKENS_MAINNET,
     WHITELIST_TOKENS_OPTIMISM,
@@ -31,6 +34,8 @@ export function getWhiteListTokensDefinition(): string[] {
         return WHITELIST_TOKENS_GOERLI;
     } else if (NETWORK == "base-testnet") {
         return WHITELIST_TOKENS_BASE_GOERLI;
+    } else if (NETWORK == "base") {
+        return WHITELIST_TOKENS_BASE_MAINNET;
     } else if (NETWORK == "mainnet") {
         return WHITELIST_TOKENS_MAINNET;
     } else if (NETWORK == "optimism") {
@@ -49,6 +54,8 @@ function getStableCoinsDefinition(): string[] {
         return STABLE_COINS_GOERLI;
     } else if (NETWORK == "base-testnet") {
         return STABLE_COINS_BASE_GOERLI;
+    } else if (NETWORK == "base") {
+        return STABLE_COINS_BASE_MAINNET;
     } else if (NETWORK == "mainnet") {
         return STABLE_COINS_MAINNET;
     } else if (NETWORK == "optimism") {
@@ -67,6 +74,8 @@ function getMinimumUSDLockedDefinition(): BigDecimal {
         return MINIMUM_USD_LOCKED_GOERLI;
     } else if (NETWORK == "base-testnet") {
         return MINIMUM_USD_LOCKED_BASE_GOERLI;
+    } else if (NETWORK == "base") {
+        return MINIMUM_USD_LOCKED_BASE_MAINNET;
     } else if (NETWORK == "mainnet") {
         return MINIMUM_USD_LOCKED_MAINNET;
     } else if (NETWORK == "optimism") {

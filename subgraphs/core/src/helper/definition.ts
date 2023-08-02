@@ -64,6 +64,13 @@ export const STABLE_COINS_BASE_GOERLI: string[] = [
 
 export const MINIMUM_USD_LOCKED_BASE_GOERLI = BigDecimal.fromString("200");
 
+// base-mainnet
+export const WHITELIST_TOKENS_BASE_MAINNET: string[] = ["0x4200000000000000000000000000000000000006"];
+
+export const STABLE_COINS_BASE_MAINNET: string[] = [];
+
+export const MINIMUM_USD_LOCKED_BASE_MAINNET = BigDecimal.fromString("2000");
+
 // ethereum
 export const WHITELIST_TOKENS_MAINNET: string[] = [
     "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48", // USDC
