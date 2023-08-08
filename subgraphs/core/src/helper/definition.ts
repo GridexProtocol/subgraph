@@ -65,9 +65,16 @@ export const STABLE_COINS_BASE_GOERLI: string[] = [
 export const MINIMUM_USD_LOCKED_BASE_GOERLI = BigDecimal.fromString("200");
 
 // base-mainnet
-export const WHITELIST_TOKENS_BASE_MAINNET: string[] = ["0x4200000000000000000000000000000000000006"];
+export const WHITELIST_TOKENS_BASE_MAINNET: string[] = [
+    "0x4200000000000000000000000000000000000006",
+    "0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca", // USDC
+    "0x50c5725949a6f0c72e6c4a641f24049a917db0cb" // DAI
+];
 
-export const STABLE_COINS_BASE_MAINNET: string[] = [];
+export const STABLE_COINS_BASE_MAINNET: string[] = [
+    "0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca", // USDC
+    "0x50c5725949a6f0c72e6c4a641f24049a917db0cb" // DAI
+];
 
 export const MINIMUM_USD_LOCKED_BASE_MAINNET = BigDecimal.fromString("2000");
 
