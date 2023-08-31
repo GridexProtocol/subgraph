@@ -157,3 +157,22 @@ export const STABLE_COINS_MATIC: string[] = [
 ];
 
 export const MINIMUM_USD_LOCKED_MATIC = BigDecimal.fromString("2000");
+
+// linea
+export const WHITELIST_TOKENS_LINEA: string[] = [
+    "0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f", // wETH
+    "0x176211869ca2b568f2a7d4ee941e073a821ee1ff", // USDC
+    "0x91c415fecd651f11d24ac4b72ed08dbeb9868d43", // GDX
+    "0x7d43aabc515c356145049227cee54b608342c0ad", // BUSD
+    "0xa219439258ca9da29e9cc4ce5596924745e12b93", // USDT
+    "0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5", // DAI
+    "0x3aab2285ddcddad8edf438c1bab47e1a9d05a9b4" // WBTC
+];
+
+export const STABLE_COINS_LINEA: string[] = [
+    "0x176211869ca2b568f2a7d4ee941e073a821ee1ff", // USDC
+    "0xa219439258ca9da29e9cc4ce5596924745e12b93", // USDT
+    "0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5" // DAI
+];
+
+export const MINIMUM_USD_LOCKED_LINEA = BigDecimal.fromString("85");

@@ -22,7 +22,10 @@ import {
     WHITELIST_TOKENS_GOERLI,
     WHITELIST_TOKENS_MAINNET,
     WHITELIST_TOKENS_OPTIMISM,
-    WHITELIST_TOKENS_MATIC
+    WHITELIST_TOKENS_MATIC,
+    WHITELIST_TOKENS_LINEA,
+    STABLE_COINS_LINEA,
+    MINIMUM_USD_LOCKED_LINEA
 } from "./helper/definition";
 import {mustLoadGrid, mustLoadToken} from "./helper/loader";
 import {toAmountDecimal} from "./helper/util";
@@ -42,6 +45,8 @@ export function getWhiteListTokensDefinition(): string[] {
         return WHITELIST_TOKENS_OPTIMISM;
     } else if (NETWORK == "matic") {
         return WHITELIST_TOKENS_MATIC;
+    } else if (NETWORK == "linea") {
+        return WHITELIST_TOKENS_LINEA;
     } else {
         throw new Error("unsupported network");
     }
@@ -62,6 +67,8 @@ function getStableCoinsDefinition(): string[] {
         return STABLE_COINS_OPTIMISM;
     } else if (NETWORK == "matic") {
         return STABLE_COINS_MATIC;
+    } else if (NETWORK == "linea") {
+        return STABLE_COINS_LINEA;
     } else {
         throw new Error("unsupported network");
     }
@@ -82,6 +89,8 @@ function getMinimumUSDLockedDefinition(): BigDecimal {
         return MINIMUM_USD_LOCKED_OPTIMISM;
     } else if (NETWORK == "matic") {
         return MINIMUM_USD_LOCKED_MATIC;
+    } else if (NETWORK == "linea") {
+        return MINIMUM_USD_LOCKED_LINEA;
     } else {
         throw new Error("unsupported network");
     }
